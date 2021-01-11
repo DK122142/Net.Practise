@@ -131,19 +131,47 @@ namespace Net.Practise
 
         public static void ZipArray()
         {
-            int[] ints = new int[new Random().Next(10,100)];
+            int[] ints = new int[new Random().Next(10,40)];
             byte[] bytes = new byte[ints.Length * sizeof(int)];
+
+            int[] decompressedInts = new int[ints.Length];
+            byte[] decompressedBytes = new byte[ints.Length * sizeof(int)];
 
             for (int i = 0; i < ints.Length; i++)
             {
                 ints[i] = new Random().Next(1, 100);
             }
 
+            Console.WriteLine($"Int array: {string.Join(",", ints)}");
+            
             Buffer.BlockCopy(ints, 0, bytes, 0, bytes.Length);
-            
 
-            
+            Console.WriteLine($"Converted to byte array: {string.Join(",", bytes)}");
 
+            using (var file = File.Create("array"))
+            {
+                using (var compress = new GZipStream(file, CompressionMode.Compress))
+                {
+                    compress.Write(bytes);
+                }
+            }
+
+            using (var file = File.OpenRead("array"))
+            {
+                using (var decompress = new GZipStream(file, CompressionMode.Decompress))
+                {
+                    decompress.Read(decompressedBytes);
+                }
+            }
+
+            Console.WriteLine($"Decompressed byte array: {string.Join(",", decompressedBytes)}");
+            
+            for (int i = 0; i < (decompressedBytes.Length / sizeof(int)); i++)
+            {
+                decompressedInts[i] = BitConverter.ToInt32(decompressedBytes, i * sizeof(int));
+            }
+
+            Console.WriteLine($"Converted to int array: {string.Join(",", decompressedInts)}");
         }
     }
 }
