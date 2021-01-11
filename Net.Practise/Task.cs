@@ -1,0 +1,149 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Net.Practise
+{
+    public static class Task
+    {
+        public static void DigitsOfNumber()
+        {
+            int.TryParse(Console.ReadLine(), out var number);
+            foreach (var digit in number.ToString())
+            {
+                Console.WriteLine(digit);
+            }
+        }
+
+        public static void FractionInteger(double number)
+        {
+            var dividedNumber = number.ToString().Split(",");
+
+            Console.WriteLine($"Number: {number} Fraction: {dividedNumber[1]}; Integer: {dividedNumber[0]}");
+        }
+
+        public static void MaxDigitOfNumber(int number)
+        {
+            var max = 0;
+
+            foreach (var digit in number.ToString())
+            {
+                if (int.Parse(digit.ToString()) > max)
+                {
+                    max = int.Parse(digit.ToString());
+                }
+            }
+
+            Console.WriteLine($"Number: {number} Max digit: {max}");
+        }
+
+        public static void MinDigitOfNumber(int number)
+        {
+            var min = int.Parse(number.ToString()[0].ToString());
+            
+            foreach (var digit in number.ToString())
+            {
+                if (int.Parse(digit.ToString()) < min)
+                {
+                    min = int.Parse(digit.ToString());
+                }
+            }
+
+            Console.WriteLine($"Number: {number} Min digit: {min}");
+        }
+
+        public static void PrintOnlyDigits(string inputString)
+        {
+            foreach (var symbol in inputString)
+            {
+                if (int.TryParse(symbol.ToString(), out var digit))
+                {
+                    Console.WriteLine(digit);
+                }
+            }
+        }
+
+        public static void FormatCurrentDate()
+        {
+            Console.WriteLine(DateTime.Now.ToString("O"));
+        }
+
+        public static void ParseDate(string date)
+        {
+            Console.WriteLine(DateTime.ParseExact(date, "yyyy dd-MM", CultureInfo.InvariantCulture));
+        }
+
+        public static void ToUpperFirstLetter()
+        {
+            string[] names = {"иван иванов", "светлана иванова-петренко"};
+
+            for (int i = 0; i < names.Length; i++)
+            {
+                var words = names[i].Split(" ");
+                for (int j = 0; j < words.Length; j++)
+                {
+                    names[i] = names[i].Replace(words[j], words[j].First().ToString().ToUpper() + words[j].Substring(1));
+                }
+            }
+
+            foreach (var name in names)
+            {
+                Console.WriteLine(name);
+            }
+        }
+
+        public static void DecodeString(string encodedString)
+        {
+            Console.WriteLine(Encoding.UTF8.GetString(Convert.FromBase64String(encodedString)));
+        }
+
+        public static void BubbleSort()
+        {
+            int[] array = new int[39];
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                array[i] = new Random().Next(1, 100);
+            }
+
+            Console.WriteLine($"Initial array: {string.Join(",", array)}");
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                for (int j = i + 1; j < array.Length; j++)
+                {
+                    if (array[i] > array[j])
+                    {
+                        var tmp = array[i];
+                        array[i] = array[j];
+                        array[j] = tmp;
+                    }
+                }
+            }
+            
+            Console.WriteLine($"Sorted array: {string.Join(",", array)}");
+        }
+
+        public static void ZipArray()
+        {
+            int[] ints = new int[new Random().Next(10,100)];
+            byte[] bytes = new byte[ints.Length * sizeof(int)];
+
+            for (int i = 0; i < ints.Length; i++)
+            {
+                ints[i] = new Random().Next(1, 100);
+            }
+
+            Buffer.BlockCopy(ints, 0, bytes, 0, bytes.Length);
+            
+
+            
+
+        }
+    }
+}
