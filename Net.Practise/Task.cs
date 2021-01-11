@@ -128,6 +128,74 @@ namespace Net.Practise
             
             Console.WriteLine($"Sorted array: {string.Join(",", array)}");
         }
+
+        public static void TreeTraversal()
+        {
+            var tree = new TreeNode<int>(0)
+            {
+                Child = new List<TreeNode<int>>
+                {
+                    new TreeNode<int>(10)
+                    {
+                        Child = new List<TreeNode<int>>
+                        {
+                            new TreeNode<int>(11),
+                            new TreeNode<int>(12)
+                        }
+                    },
+                    new TreeNode<int>(20)
+                    {
+                        Child = new List<TreeNode<int>>
+                        {
+                            new TreeNode<int>(21),
+                            new TreeNode<int>(22)
+                        }
+                    },
+                    new TreeNode<int>(30)
+                    {
+                        Child = new List<TreeNode<int>>
+                        {
+                            new TreeNode<int>(31)
+                        }
+                    }
+                }
+            };
+
+            Console.WriteLine("DFT:");
+            foreach (TreeNode<int> node in tree.DepthFirstTraversal())
+            {
+                Console.WriteLine(node.Data);
+            }
+
+            Console.WriteLine("{0}BFT:", Environment.NewLine);
+            foreach (TreeNode<int> node in tree.BreadthFirstTraversal())
+            {
+                Console.WriteLine(node.Data);
+            }
+
+// must produce this console output:
+            // DFT:
+            // 0
+            // 10
+            // 11
+            // 12
+            // 20
+            // 21
+            // 22
+            // 30
+            // 31
+            //
+            // BFT:
+            // 0
+            // 10
+            // 20
+            // 30
+            // 11
+            // 12
+            // 21
+            // 22
+            // 31
+        }
         
         public static void ZipArray()
         {

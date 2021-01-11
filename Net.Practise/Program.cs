@@ -36,8 +36,8 @@ namespace Net.Practise
             // Console.WriteLine("Отсортировать массив из 39. Пузырьком.");
             // Task.BubbleSort();
 
-            // Console.WriteLine("Дан класс TreeNode<T>, который представляет узел древовидной структуры данных - https://bitbucket.org/snippets/NazariyTaran/8enepB#file-TreeNode.cs Реализовать методы для обхода дерева - в глубину (DepthFirstTraversal) и в ширину (BreadthFirstTraversal)");
-            
+            Console.WriteLine("Дан класс TreeNode<T>, который представляет узел древовидной структуры данных - https://bitbucket.org/snippets/NazariyTaran/8enepB#file-TreeNode.cs Реализовать методы для обхода дерева - в глубину (DepthFirstTraversal) и в ширину (BreadthFirstTraversal)");
+            Task.TreeTraversal();
 
             // Console.WriteLine("Рандомно сгенерить массив чисел от 0 до 100 произвольной размерности, и записать в файл в сжатом виде, а затем считать сжатый массив обратно и вывести на консоль.");
             // Task.ZipArray();
