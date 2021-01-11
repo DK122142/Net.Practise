@@ -241,5 +241,63 @@ namespace Net.Practise
 
             Console.WriteLine($"Converted to int array: {string.Join(",", decompressedInts)}");
         }
+
+        public static void QuickSort()
+        {
+            
+            int[] array = new int[39];
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                array[i] = new Random().Next(1, 100);
+            }
+
+            Console.WriteLine($"Initial array: {string.Join(",", array)}");
+
+            QuickSort(array, 0, array.Length - 1);
+
+            Console.WriteLine($"Sorted array: {string.Join(",", array)}");
+        }
+
+        private static void QuickSort(int[] array, int start, int end)
+        {
+            int i = start;
+            int j = end;
+
+            var mid = array[(start + end) / 2];
+
+            while (i <= j)
+            {
+                while (array[i].CompareTo(mid) < 0)
+                {
+                    i++;
+                }
+
+                while (array[j].CompareTo(mid) > 0)
+                {
+                    j--;
+                }
+
+                if (i <= j)
+                {
+                    var tmp = array[i];
+                    array[i] = array[j];
+                    array[j] = tmp;
+
+                    i++;
+                    j--;
+                }
+            }
+            
+            if (start < j)
+            {
+                QuickSort(array, start, j);
+            }
+
+            if (i < end)
+            {
+                QuickSort(array, i, end);
+            }
+        }
     }
 }
