@@ -28,7 +28,7 @@ namespace Net.Practise
             // Task.ParseDate("2016 21-07");
             //
             // Console.WriteLine("Задан массив строк имен и фамилий: [“иван иванов”, “светлана иванова-петренко”]. Преобразовать так, чтобы имя и фамилия были с заглавной буквы.");
-            // Task.ToUpperFirstLetter(); //not 100%
+            // Task.ToUpperFirstLetter();
             //
             // Console.WriteLine("Дана строка в формате base64 - “0JXRgdC70Lgg0YLRiyDRh9C40YLQsNC10YjRjCDRjdGC0L7RgiDRgtC10LrRgdGCLCDQt9C90LDRh9C40YIg0LfQsNC00LDQvdC40LUg0LLRi9C/0L7Qu9C90LXQvdC+INCy0LXRgNC90L4gOik=”Расшифровать данную строку. (Кодировка UTF8)");
             // Task.DecodeString("0JXRgdC70Lgg0YLRiyDRh9C40YLQsNC10YjRjCDRjdGC0L7RgiDRgtC10LrRgdGCLCDQt9C90LDRh9C40YIg0LfQsNC00LDQvdC40LUg0LLRi9C/0L7Qu9C90LXQvdC+INCy0LXRgNC90L4gOik=");
@@ -36,10 +36,11 @@ namespace Net.Practise
             // Console.WriteLine("Отсортировать массив из 39. Пузырьком.");
             // Task.BubbleSort();
 
-            // Console.WriteLine(Дан класс TreeNode<T>, который представляет узел древовидной структуры данных - https://bitbucket.org/snippets/NazariyTaran/8enepB#file-TreeNode.cs Реализовать методы для обхода дерева - в глубину (DepthFirstTraversal) и в ширину (BreadthFirstTraversal));
-            //
-            Console.WriteLine("Рандомно сгенерить массив чисел от 0 до 100 произвольной размерности, и записать в файл в сжатом виде, а затем считать сжатый массив обратно и вывести на консоль.");
-            Task.ZipArray();
+            // Console.WriteLine("Дан класс TreeNode<T>, который представляет узел древовидной структуры данных - https://bitbucket.org/snippets/NazariyTaran/8enepB#file-TreeNode.cs Реализовать методы для обхода дерева - в глубину (DepthFirstTraversal) и в ширину (BreadthFirstTraversal)");
+            
+
+            // Console.WriteLine("Рандомно сгенерить массив чисел от 0 до 100 произвольной размерности, и записать в файл в сжатом виде, а затем считать сжатый массив обратно и вывести на консоль.");
+            // Task.ZipArray();
         }
     }
 }

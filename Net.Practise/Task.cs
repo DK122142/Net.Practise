@@ -84,7 +84,7 @@ namespace Net.Practise
 
             for (int i = 0; i < names.Length; i++)
             {
-                var words = names[i].Split(" ");
+                var words = names[i].Split(new [] { " ","-" }, StringSplitOptions.None);
                 for (int j = 0; j < words.Length; j++)
                 {
                     names[i] = names[i].Replace(words[j], words[j].First().ToString().ToUpper() + words[j].Substring(1));
@@ -128,7 +128,7 @@ namespace Net.Practise
             
             Console.WriteLine($"Sorted array: {string.Join(",", array)}");
         }
-
+        
         public static void ZipArray()
         {
             int[] ints = new int[new Random().Next(10,40)];
