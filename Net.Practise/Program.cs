@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Net.Practise
+namespace Algorithms
 {
     class Program
     {
