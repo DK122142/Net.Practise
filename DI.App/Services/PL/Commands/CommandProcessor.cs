@@ -1,21 +1,24 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using DI.App.Abstractions;
+using DI.App.Abstractions.BLL;
 using DI.App.Services.PL.Commands;
 
 namespace DI.App.Services.PL
 {
     public class CommandProcessor : ICommandProcessor
     {
-        private readonly Dictionary<int, ICommand> commands = new Dictionary<int, ICommand>();
+        private readonly Dictionary<int, ICommand> commands;
 
-        public CommandProcessor()
+        public CommandProcessor(IUserStore userStore)
         {
-            var addUsers = new AddUserCommand();
-            var listUsers = new ListUsersCommand();
+            commands = new Dictionary<int, ICommand>();
 
-            this.commands.Add(addUsers.Number, addUsers);
-            this.commands.Add(listUsers.Number, listUsers);
+            var addUser = new AddUserCommand(userStore);
+            var listUsers = new ListUsersCommand(userStore);
+            
+            commands.Add(addUser.Number, addUser);
+            commands.Add(listUsers.Number, listUsers);
         }
 
         public void Process(int number)

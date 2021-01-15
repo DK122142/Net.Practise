@@ -6,7 +6,12 @@ namespace DI.App.Services
 {
     public class InMemoryDatabaseService : IDatabaseService
     {
-        private readonly Dictionary<int, IDbEntity> inMemoryDatabase = new Dictionary<int, IDbEntity>();
+        private readonly Dictionary<int, IDbEntity> inMemoryDatabase;
+
+        public InMemoryDatabaseService()
+        {
+            this.inMemoryDatabase = new Dictionary<int, IDbEntity>();
+        }
 
         public IEnumerable<T> Read<T>() 
             where T : IDbEntity

@@ -7,7 +7,12 @@ namespace DI.App.Services
 {
     public class UserStore : IUserStore
     {
-        private readonly IDatabaseService dbService = new InMemoryDatabaseService();
+        private readonly IDatabaseService dbService;
+
+        public UserStore(IDatabaseService dbService)
+        {
+            this.dbService = dbService;
+        }
 
         public IEnumerable<IUser> Users => this.dbService.Read<IUser>();
 

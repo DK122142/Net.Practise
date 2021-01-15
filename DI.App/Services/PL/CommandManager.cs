@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Text;
 using DI.App.Abstractions;
+using DI.App.Abstractions.PL;
 
 namespace DI.App.Services.PL
 {
-    public class CommandManager
+    public class CommandManager : ICommandManager
     {
-        private readonly ICommandProcessor processor = new CommandProcessor();
+        public ICommandProcessor CommandProcessor { get; }
         private string info;
+
+        public CommandManager(ICommandProcessor processor)
+        {
+            this.CommandProcessor = processor;
+        }
 
         public void Start()
         {
@@ -27,7 +33,7 @@ namespace DI.App.Services.PL
                     continue;
                 }
 
-                this.processor.Process(command);
+                this.CommandProcessor.Process(command);
 
                 Console.WriteLine("RETURN to continue...");
                 Console.ReadLine();
@@ -37,7 +43,7 @@ namespace DI.App.Services.PL
         private void SetupInfo()
         {
             var sb = new StringBuilder();
-            var commands = this.processor.Commands;
+            var commands = this.CommandProcessor.Commands;
 
             sb.AppendLine("Select operation:");
 
