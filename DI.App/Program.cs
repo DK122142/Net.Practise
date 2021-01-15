@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using DI.App.Abstractions;
 using DI.App.Abstractions.BLL;
 using DI.App.Abstractions.PL;
@@ -15,14 +16,15 @@ namespace DI.App
         private static void Main()
         {
             IServiceCollection services = new ServiceCollection();
-            
-            services.AddTransient<IUser, User>();
-            services.AddTransient<IDatabaseService, InMemoryDatabaseService>();
-            services.AddTransient<IUserStore, UserStore>();
-            services.AddTransient<ICommand, AddUserCommand>();
-            services.AddTransient<ICommand, ListUsersCommand>();
-            services.AddTransient<ICommandProcessor, CommandProcessor>();
-            services.AddTransient<ICommandManager, CommandManager>();
+
+            services.AddSingleton<IUser, User>();
+            services.AddSingleton<IDatabaseService, InMemoryDatabaseService>();
+            services.AddSingleton<IUserStore, UserStore>();
+            services.AddSingleton<ICommand, AddUserCommand>();
+            services.AddSingleton<ICommand, ListUsersCommand>();
+            services.AddSingleton<ICommandProcessor, CommandProcessor>(provider =>
+                new CommandProcessor(provider.GetServices<ICommand>().ToDictionary(c => c.Number)));
+            services.AddSingleton<ICommandManager, CommandManager>();
             
             IServiceProvider serviceProvider = services.BuildServiceProvider();
             

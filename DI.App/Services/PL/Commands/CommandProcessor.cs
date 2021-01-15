@@ -10,15 +10,9 @@ namespace DI.App.Services.PL
     {
         private readonly Dictionary<int, ICommand> commands;
 
-        public CommandProcessor(IUserStore userStore)
+        public CommandProcessor(Dictionary<int, ICommand> commands)
         {
-            commands = new Dictionary<int, ICommand>();
-
-            var addUser = new AddUserCommand(userStore);
-            var listUsers = new ListUsersCommand(userStore);
-            
-            commands.Add(addUser.Number, addUser);
-            commands.Add(listUsers.Number, listUsers);
+            this.commands = commands;
         }
 
         public void Process(int number)
