@@ -24,10 +24,5 @@ namespace FileManager.Refactor
                 count = stream.Read(result, 0, count);
             return BitConverter.ToString(result, 0, count).Replace('-', ' ');
         }
-
-        public bool Supports(string extension)
-        {
-            return true;
-        }
     }
 }

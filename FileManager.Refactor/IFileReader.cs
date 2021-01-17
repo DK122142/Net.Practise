@@ -14,10 +14,5 @@ namespace FileManager.Refactor
         List<string> Extensions { get; set; }
 
         string Read(string filePath);
-
-        bool Supports(string filePath)
-        {
-            return this.Extensions.Contains(Path.GetExtension(filePath.ToLower()));
-        }
     }
 }
