@@ -20,6 +20,8 @@ namespace FileManager.Refactor
     {
         private string _currentPath;
 
+        private List<IFileReader> Readers { get; set; }
+
         public PathView(string basePath = @"c:\")
         {
             if (!Path.IsPathRooted(basePath))
@@ -27,6 +29,17 @@ namespace FileManager.Refactor
                 throw new ArgumentException(nameof(basePath));
             }
             this._currentPath = basePath;
+
+            Readers = new List<IFileReader>();
+            
+            var readerTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(s => s.GetTypes())
+                .Where(t => t.GetInterfaces().Contains(typeof(IFileReader)));
+
+            foreach (var readerType in readerTypes)
+            {
+                var reader = Activator.CreateInstance(readerType);
+                Readers.Add(reader as IFileReader);
+            }
         }
 
         public void Show()
@@ -63,22 +76,18 @@ namespace FileManager.Refactor
 
             string resultStr = string.Empty;
 
-            //TODO: Rework using reflection and some greate OOP
+            //TODO: Rework using reflection and some greate OOP (updated)
 
-            if (Path.GetExtension(_currentPath).ToLower() == ".txt")
+            var reader = this.Readers.FirstOrDefault(r =>
+                r.Extensions.Contains(Path.GetExtension(_currentPath).ToLower()));
+
+            if (reader != null)
             {
-                int count = 1024;
-                char[] result = new char[count];
-                using (var reader = System.IO.File.OpenText(_currentPath))
-                    count = reader.Read(result, 0, count);
-                resultStr = new string(result);
-            } else
+                resultStr = reader.Read(_currentPath);
+            }
+            else
             {
-                int count = 2048;
-                byte[] result = new byte[count];
-                using (var stream = System.IO.File.OpenRead(this._currentPath))
-                    count = stream.Read(result, 0, count);
-                resultStr = BitConverter.ToString(result, 0, count).Replace('-', ' ');
+                Console.WriteLine("Extension not supported");
             }
 
             Console.Clear();
