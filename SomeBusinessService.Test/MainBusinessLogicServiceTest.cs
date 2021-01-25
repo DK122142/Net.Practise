@@ -27,7 +27,16 @@ namespace SomeBusinessService.Test
         }
 
         [Test]
-        public void Create_Product_ArgumentExceptionDueToNameAbsence()
+        public void Create_Product_ArgumentExceptionWhenProductIsNull()
+        {
+            var dbMangerMock = new Mock<IDBManager>();
+            var service = new MainBusinessLogicService(dbMangerMock.Object);
+
+            Assert.Throws<ArgumentException>(() => service.Create(null));
+        }
+
+        [Test]
+        public void Create_Product_ArgumentExceptionWhenNameIsNull()
         {
             var dbMangerMock = new Mock<IDBManager>();
             var service = new MainBusinessLogicService(dbMangerMock.Object);
@@ -37,7 +46,7 @@ namespace SomeBusinessService.Test
         }
 
         [Test]
-        public void Create_Product_ArgumentExceptionDueToIsEmpty()
+        public void Create_Product_ArgumentExceptionWhenNameIsEmpty()
         {
             var dbMangerMock = new Mock<IDBManager>();
             var service = new MainBusinessLogicService(dbMangerMock.Object);
