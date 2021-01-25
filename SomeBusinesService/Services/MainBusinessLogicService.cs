@@ -37,7 +37,7 @@ namespace SomeBusinessService.Services
 
         public Product Get(string name)
         {
-            if (string.IsNullOrEmpty(name))
+            if (!string.IsNullOrEmpty(name))
             {
                 return _dBManager.Get(name);
             }
@@ -50,7 +50,7 @@ namespace SomeBusinessService.Services
             if (!string.IsNullOrEmpty(name))
             {
                 var updatedProduct = _dBManager.Get(name);
-                if (updatedProduct.LastUpdated>DateTime.Now)
+                if (product.LastUpdated < DateTime.Now)
                 {
                     _dBManager.Update(product, name);
                 }
