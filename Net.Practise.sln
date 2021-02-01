@@ -17,9 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linq2_2", "Linq2_2\Linq2_2.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestingTask.Core", "TestingTask.Core\TestingTask.Core.csproj", "{7B2582A5-4792-4741-849E-0965D8794F25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestingTask.BL", "TestingTask.BL\TestingTask.BL.csproj", "{D3CDDFB9-49BA-49A4-A9D1-BBEC56D89788}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestingTask.Core.Test", "TestingTask.Core.Test\TestingTask.Core.Test.csproj", "{C7C03079-A987-402F-BD5D-12D1BD572794}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestingTask.Core.Test", "TestingTask.Core.Test\TestingTask.Core.Test.csproj", "{C7C03079-A987-402F-BD5D-12D1BD572794}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,10 +53,6 @@ Global
 		{7B2582A5-4792-4741-849E-0965D8794F25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B2582A5-4792-4741-849E-0965D8794F25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B2582A5-4792-4741-849E-0965D8794F25}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D3CDDFB9-49BA-49A4-A9D1-BBEC56D89788}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D3CDDFB9-49BA-49A4-A9D1-BBEC56D89788}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D3CDDFB9-49BA-49A4-A9D1-BBEC56D89788}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D3CDDFB9-49BA-49A4-A9D1-BBEC56D89788}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C7C03079-A987-402F-BD5D-12D1BD572794}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C7C03079-A987-402F-BD5D-12D1BD572794}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C7C03079-A987-402F-BD5D-12D1BD572794}.Release|Any CPU.ActiveCfg = Release|Any CPU
