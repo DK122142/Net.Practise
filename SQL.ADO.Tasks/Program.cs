@@ -57,40 +57,98 @@ namespace SQL.ADO.Tasks
                 connection.Open();
                 // Console.WriteLine($"{connection.Database}");
                 
-                ExecuteCmd(connection, task1);
-                ExecuteCmd(connection, task2);
-                ExecuteCmd(connection, task3);
-                ExecuteCmd(connection, task4);
-                ExecuteCmd(connection, task6);
-            }
-        }
+                //CRUD
+                Insert(connection);
+                Read(connection);
+                Update(connection, 6);
+                // Delete(connection, 5);
 
-        public static void ExecuteCmd(SqlConnection _connection, string _cmd)
-        {
-            using (var cmd = new SqlCommand(_cmd, _connection))
+                // SQL tasks
+                // ExecuteSqlTask(connection, task1);
+                // ExecuteSqlTask(connection, task2);
+                // ExecuteSqlTask(connection, task3);
+                // ExecuteSqlTask(connection, task4);
+                // ExecuteSqlTask(connection, task6);
+            }
+
+            void ExecuteSqlTask(SqlConnection _connection, string _cmd)
             {
-                using (var adapter = new SqlDataAdapter(cmd))
+                using (var cmd = new SqlCommand(_cmd, _connection))
                 {
-                    var res = new DataTable();
-                    adapter.Fill(res);
-                    PrintTable(res);
+                    using (var adapter = new SqlDataAdapter(cmd))
+                    {
+                        var res = new DataTable();
+                        adapter.Fill(res);
+                        PrintTable(res);
+                    }
                 }
             }
-        }
 
-        public static void PrintTable(DataTable table)
-        {
-            foreach (DataRow row in table.Rows)
+            void PrintTable(DataTable table)
             {
-                foreach (var item in row.ItemArray)
+                foreach (DataRow row in table.Rows)
                 {
-                    Console.Write($"{item} |");
-                }
+                    foreach (var item in row.ItemArray)
+                    {
+                        Console.Write($"{item} |");
+                    }
 
-                Console.WriteLine();
+                    Console.WriteLine();
+                }
+            
+                Console.WriteLine($"Rows: {table.Rows.Count}\n");
+            }
+
+            void Insert(SqlConnection _connection)
+            {
+                string query = @"INSERT INTO TestTable
+                                ([name], [description], misc) 
+                                VALUES ('Next','new test','value via ADO')";
+
+                using (var cmd = new SqlCommand(query, _connection))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+            }
+
+            void Read(SqlConnection _connection)
+            {
+                string query = @"SELECT *
+                                    FROM TestTable";
+
+                ExecuteSqlTask(_connection, query);
+            }
+
+            void Update(SqlConnection _connection, int id)
+            {
+                string query = @$"UPDATE TestTable
+	                                SET [name] = 'Updated'
+	                                WHERE id = {id}";
+
+                using (var cmd = new SqlCommand(query, _connection))
+                {
+                    cmd.ExecuteNonQuery();
+                }
             }
             
-            Console.WriteLine($"Rows: {table.Rows.Count}\n");
+            void Delete(SqlConnection _connection, int id)
+            {
+                string query = @$"DELETE FROM TestTable
+	                                WHERE id = {id}";
+
+                using (var cmd = new SqlCommand(query, _connection))
+                {
+                    try
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                    catch (SqlException e)
+                    {
+                        Console.WriteLine(e);
+                        throw;
+                    }
+                }
+            }
         }
     }
 }
