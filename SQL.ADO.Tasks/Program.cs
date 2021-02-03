@@ -15,9 +15,9 @@ namespace SQL.ADO.Tasks
                 .AddJsonFile("config.json", false)
                 .Build();
 
-            string connectionString = "Data Source=desktop-k9eou6n;Initial Catalog=Northwind;Integrated Security=True";
-            // string connectionString =  ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-            // string connectionString = configuration.GetSection("connectionString").Value;
+            // string connectionString = "Data Source=desktop-k9eou6n;Initial Catalog=Northwind;Integrated Security=True";
+            // string connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+            string connectionString = configuration.GetSection("connectionString").Value;
             
             string task1 = @"SELECT [EmployeeID],[LastName],[FirstName]
                                 FROM [Northwind].[dbo].[Employees]
