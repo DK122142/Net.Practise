@@ -63,6 +63,14 @@ namespace TestingTask.Core.Test
         }
 
         [Test]
+        public void Validate_NullGroup_False()
+        {
+            this.guestsGroup.Guests = null;
+
+            Assert.IsFalse(this.validator.Validate(this.guestsGroup));
+        }
+
+        [Test]
         public void Validate_GroupWithOneEmptyName_False()
         {
             this.guestsGroup.Guests[1].FirstName = string.Empty;
