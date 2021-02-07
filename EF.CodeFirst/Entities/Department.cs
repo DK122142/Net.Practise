@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace EF.CodeFirst.Entities
 {
+    [Index(nameof(Name), IsUnique = true)]
     public class Department
     {
         [Key]
         public int DepartmentId { get; set; }
-
+        
         public string Name { get; set; }
 
         public string GroupName { get; set; }

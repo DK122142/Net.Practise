@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace EF.CodeFirst.Entities
 {
+    [Index(nameof(Name), nameof(StartTime), nameof(EndTime), IsUnique = true)]
     public class Shift
     {
         [Key]

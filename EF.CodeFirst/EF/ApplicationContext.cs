@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using EF.CodeFirst.Entities;
+﻿using EF.CodeFirst.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace EF.CodeFirst.EF
@@ -31,12 +26,6 @@ namespace EF.CodeFirst.EF
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Employee>().HasIndex(e => e.NationalIdNumber).IsUnique();
-            modelBuilder.Entity<Employee>().HasIndex(e => e.LoginId).IsUnique();
-
-            modelBuilder.Entity<EmployeeDepartment>()
-                .HasKey(ed => new {ed.EmployeeId, ed.DepartmentId, ed.ShiftId});
-            
             modelBuilder.Entity<EmployeeDepartment>()
                 .HasOne<Employee>(ed => ed.Employee)
                 .WithMany(e => e.EmployeeDepartments)
