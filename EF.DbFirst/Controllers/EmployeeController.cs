@@ -1,19 +1,18 @@
 ﻿using System.Linq;
-using EF.CodeFirst.EF;
-using EF.CodeFirst.Entities;
-using Microsoft.EntityFrameworkCore;
+using EF.DbFirst.EF;
+using EF.DbFirst.Models;
 
-namespace EF.CodeFirst.Controllers
+namespace EF.DbFirst.Controllers
 {
     public class EmployeeController
     {
-        private ApplicationDbContext dbContext;
+        private ef_taskContext dbContext;
 
-        public EmployeeController(ApplicationDbContext dbContext)
+        public EmployeeController(ef_taskContext dbContext)
         {
             this.dbContext = dbContext;
         }
-
+        
         public void Create(Employee employee)
         {
             this.dbContext.Employees.Add(employee);
@@ -36,5 +35,6 @@ namespace EF.CodeFirst.Controllers
             this.dbContext.Employees.Remove(employee);
             this.dbContext.SaveChanges();
         }
+
     }
 }

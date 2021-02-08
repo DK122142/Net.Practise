@@ -1,10 +1,9 @@
-﻿using System;
+﻿using EF.DbFirst.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
-namespace EF.DbFirst.Models
+namespace EF.DbFirst.EF
 {
     public partial class ef_taskContext : DbContext
     {
