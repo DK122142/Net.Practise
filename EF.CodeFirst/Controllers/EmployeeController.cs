@@ -1,14 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EF.CodeFirst.EF;
+using Microsoft.EntityFrameworkCore;
 
 namespace EF.CodeFirst.Controllers
 {
     public class EmployeeController
     {
-        private DbContext context;
+        private ApplicationDbContext _dbContext;
 
-        public EmployeeController(DbContext context)
+        public EmployeeController(ApplicationDbContext dbContext)
         {
-            this.context = context;
+            this._dbContext = dbContext;
         }
+
+
     }
 }

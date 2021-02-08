@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EF.CodeFirst.EF
 {
-    public class ApplicationContext : DbContext
+    public class ApplicationDbContext : DbContext
     {
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Person> Persons { get; set; }
@@ -13,11 +13,11 @@ namespace EF.CodeFirst.EF
         public DbSet<Shift> Shifts { get; set; }
         public DbSet<Department> Departments { get; set; }
 
-        public ApplicationContext()
-        {
-            // Database.EnsureDeleted();
-            Database.EnsureCreated();
-        }
+        // public ApplicationDbContext()
+        // {
+        //     Database.EnsureDeleted();
+        //     Database.EnsureCreated();
+        // }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -26,6 +26,9 @@ namespace EF.CodeFirst.EF
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<EmployeeDepartment>()
+                .HasKey(ed => new {ed.EmployeeId, ed.DepartmentId, ed.ShiftId, ed.StartDate});
+
             modelBuilder.Entity<EmployeeDepartment>()
                 .HasOne<Employee>(ed => ed.Employee)
                 .WithMany(e => e.EmployeeDepartments)
