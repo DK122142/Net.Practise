@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using TestingTask.Core.Interfaces;
@@ -55,7 +53,7 @@ namespace TestingTask.Core.Test
             var validator = new GroupValidator();
             var bookingService = new BookingService(validator, this.hotelRepository.Object);
 
-            var expectedHotels = new List<Hotel>(this.hotelsList);
+            var expectedHotels = this.hotelsList.Select(h => h.Name);
             var hotelsResult = bookingService.GetSuitableHotelNames(group);
 
             CollectionAssert.AreEqual(expectedHotels, hotelsResult);
