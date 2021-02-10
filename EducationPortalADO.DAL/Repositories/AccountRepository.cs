@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using EducationPortalADO.DAL.Entities;
@@ -16,14 +15,16 @@ namespace EducationPortalADO.DAL.Repositories
             this.connectionString = connectionString;
         }
 
-        public IEnumerable<Account> GetAll()
+        public IEnumerable<Account> GetTop(int amount)
         {
+            var command = @"SELECT TOP @amount * FROM accounts";
+
             using (var connection = new SqlConnection(this.connectionString))
             {
-                var command = "SELECT * FROM accounts";
-
                 using (var cmd = new SqlCommand(command, connection))
                 {
+                    cmd.Parameters.AddWithValue("@amount", amount);
+
                     using (var adapter = new SqlDataAdapter(cmd))
                     {
                         var resultTable = new DataTable();
@@ -46,12 +47,14 @@ namespace EducationPortalADO.DAL.Repositories
 
         public Account Get(int id)
         {
+            var command = @"SELECT * FROM accounts WHERE id = @id";
+
             using (var connection = new SqlConnection(this.connectionString))
             {
-                var command = $"SELECT * FROM accounts WHERE id = {id}";
-
                 using (var cmd = new SqlCommand(command, connection))
                 {
+                    cmd.Parameters.AddWithValue("@id", id);
+
                     using (var adapter = new SqlDataAdapter(cmd))
                     {
                         var resultTable = new DataTable();
@@ -73,21 +76,20 @@ namespace EducationPortalADO.DAL.Repositories
 
             return default;
         }
-
-        public IEnumerable<Account> Find(Func<Account, bool> predicate)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         public Account Create(Account item)
         {
+            var command = @"INSERT INTO accounts(login, password, role)
+                                    VALUES (@login, @password, @role)";
+
             using (var connection = new SqlConnection(this.connectionString))
             {
-                var command = @$"INSERT INTO accounts(login, password, role)
-                                    VALUES ('{item.Login}', '{item.Password}', {item.Role})";
-
                 using (var cmd = new SqlCommand(command, connection))
                 {
+                    cmd.Parameters.AddWithValue("@login", item.Login);
+                    cmd.Parameters.AddWithValue("@password", item.Password);
+                    cmd.Parameters.AddWithValue("@role", item.Role);
+
                     using (var adapter = new SqlDataAdapter(cmd))
                     {
                         var resultTable = new DataTable();
@@ -112,14 +114,19 @@ namespace EducationPortalADO.DAL.Repositories
 
         public Account Update(Account item)
         {
+            var command = @"UPDATE accounts
+                                    SET login = @login, password = @password, role = @role
+                                    WHERE id = @id";
+
             using (var connection = new SqlConnection(this.connectionString))
             {
-                var command = @$"UPDATE accounts
-                                    SET login = '{item.Login}', password = '{item.Password}', role = {item.Role}
-                                    WHERE id = {item.Id}";
-
                 using (var cmd = new SqlCommand(command, connection))
                 {
+                    cmd.Parameters.AddWithValue("@login", item.Login);
+                    cmd.Parameters.AddWithValue("@password", item.Password);
+                    cmd.Parameters.AddWithValue("@role", item.Role);
+                    cmd.Parameters.AddWithValue("@id", item.Id);
+
                     using (var adapter = new SqlDataAdapter(cmd))
                     {
                         var resultTable = new DataTable();
@@ -144,13 +151,15 @@ namespace EducationPortalADO.DAL.Repositories
 
         public void Delete(int id)
         {
+            var command = @"DELETE FROM accounts
+                                    WHERE id = @id";
+
             using (var connection = new SqlConnection(this.connectionString))
             {
-                var command = @$"DELETE FROM accounts
-                                    WHERE id = {id}";
-
                 using (var cmd = new SqlCommand(command, connection))
                 {
+                    cmd.Parameters.AddWithValue("@id", id);
+
                     using (var adapter = new SqlDataAdapter(cmd))
                     {
                         var resultTable = new DataTable();

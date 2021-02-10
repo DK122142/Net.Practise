@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using EducationPortalADO.DAL.Entities;
@@ -16,14 +15,16 @@ namespace EducationPortalADO.DAL.Repositories
             this.connectionString = connectionString;
         }
 
-        public IEnumerable<Role> GetAll()
+        public IEnumerable<Role> GetTop(int amount)
         {
+            var command = "SELECT TOP @amount * FROM roles_new";
+
             using (var connection = new SqlConnection(this.connectionString))
             {
-                var command = "SELECT * FROM roles_new";
-
                 using (var cmd = new SqlCommand(command, connection))
                 {
+                    cmd.Parameters.AddWithValue("@amount", amount);
+
                     using (var adapter = new SqlDataAdapter(cmd))
                     {
                         var resultTable = new DataTable();
@@ -47,12 +48,14 @@ namespace EducationPortalADO.DAL.Repositories
 
         public Role Get(int id)
         {
+            var command = @"SELECT * FROM roles_new WHERE id = @id";
+
             using (var connection = new SqlConnection(this.connectionString))
             {
-                var command = $"SELECT * FROM roles_new WHERE id = {id}";
-
                 using (var cmd = new SqlCommand(command, connection))
                 {
+                    cmd.Parameters.AddWithValue("@id", id);
+
                     using (var adapter = new SqlDataAdapter(cmd))
                     {
                         var resultTable = new DataTable();
@@ -75,21 +78,19 @@ namespace EducationPortalADO.DAL.Repositories
 
             return default;
         }
-
-        public IEnumerable<Role> Find(Func<Role, bool> predicate)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         public Role Create(Role item)
         {
+            var command = @"INSERT INTO roles_new(type, description)
+                                    VALUES (@type, @description)";
+
             using (var connection = new SqlConnection(this.connectionString))
             {
-                var command = @$"INSERT INTO roles_new(type, description)
-                                    VALUES ({(int)item.RoleType}, '{item.RoleType}')";
-
                 using (var cmd = new SqlCommand(command, connection))
                 {
+                    cmd.Parameters.AddWithValue("@type", (int) item.RoleType);
+                    cmd.Parameters.AddWithValue("@description", item.RoleType);
+
                     using (var adapter = new SqlDataAdapter(cmd))
                     {
                         var resultTable = new DataTable();
@@ -115,14 +116,18 @@ namespace EducationPortalADO.DAL.Repositories
 
         public Role Update(Role item)
         {
+            var command = @"UPDATE roles_new
+                                    SET type = @type, description = @description
+                                    WHERE id = @id";
+
             using (var connection = new SqlConnection(this.connectionString))
             {
-                var command = @$"UPDATE roles_new
-                                    SET type = {(int)item.RoleType}, description = '{item.Description}'
-                                    WHERE id = {item.Id}";
-
                 using (var cmd = new SqlCommand(command, connection))
                 {
+                    cmd.Parameters.AddWithValue("@type", (int) item.RoleType);
+                    cmd.Parameters.AddWithValue("@description", item.RoleType);
+                    cmd.Parameters.AddWithValue("@id", item.Id);
+
                     using (var adapter = new SqlDataAdapter(cmd))
                     {
                         var resultTable = new DataTable();
@@ -148,13 +153,15 @@ namespace EducationPortalADO.DAL.Repositories
 
         public void Delete(int id)
         {
+            var command = @"DELETE FROM roles_new
+                                    WHERE id = @id";
+
             using (var connection = new SqlConnection(this.connectionString))
             {
-                var command = @$"DELETE FROM roles_new
-                                    WHERE id = {id}";
-
                 using (var cmd = new SqlCommand(command, connection))
                 {
+                    cmd.Parameters.AddWithValue("@id", id);
+
                     using (var adapter = new SqlDataAdapter(cmd))
                     {
                         var resultTable = new DataTable();
