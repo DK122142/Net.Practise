@@ -7,11 +7,11 @@ using Dapper.Contrib.Extensions;
 
 namespace DapperTask.Models
 {
-    [Table("Mail")]
-    public class Mail
+    [Table("UserMail")]
+    public class UserMail
     {
-        public int Id { get; set; }
+        public int User_Id { get; set; }
 
-        public string Object { get; set; }
+        public int Mail_Id { get; set; }
     }
 }
