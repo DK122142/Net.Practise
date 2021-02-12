@@ -2,7 +2,7 @@
 
 namespace CSVGenerator
 {
-    public class Service
+    public class ReflectionUtil
     {
         public static List<string> GetFields()
         {
