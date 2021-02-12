@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dapper;
+using Dapper.Contrib.Extensions;
 using DapperTask.Interfaces;
 using DapperTask.Models;
 using Microsoft.Data.SqlClient;
@@ -21,15 +22,9 @@ namespace DapperTask.Repositories.Dapper
 
         public async Task Create(T item)
         {
-            var properties = typeof(T).GetProperties().ToList().Select(p => p.Name).Where(n => n != "Id");
-
-            var columns = string.Join(",", properties);
-
-            var values = string.Join(",", properties.Select(p => $"@{p}"));
-
             using (var db = new SqlConnection(this.connectionString))
             {
-                await db.ExecuteAsync($@"INSERT INTO {typeof(T).Name} ({columns}) VALUES ({values})", item);
+                await db.InsertAsync(item);
             }
         }
 
@@ -37,7 +32,7 @@ namespace DapperTask.Repositories.Dapper
         {
             using (var db = new SqlConnection(this.connectionString))
             {
-                return await db.QueryAsync<T>($@"SELECT * FROM [{typeof(T).Name}]");
+                return await db.GetAllAsync<T>();
             }
         }
 
@@ -45,18 +40,24 @@ namespace DapperTask.Repositories.Dapper
         {
             using (var db = new SqlConnection(this.connectionString))
             {
-                return await db.QueryFirstOrDefaultAsync<T>($@"SELECT * FROM [{typeof(T).Name}] WHERE Id = {id}");
+                return await db.GetAsync<T>(id);
             }
         }
         
-        public void Update(T item)
+        public async Task<bool> Update(T item)
         {
-            throw new NotImplementedException();
+            using (var db = new SqlConnection(this.connectionString))
+            {
+                return await db.UpdateAsync(item);
+            }
         }
 
-        public void Delete(int id)
+        public async Task<bool> Delete(T item)
         {
-            throw new NotImplementedException();
+            using (var db = new SqlConnection(this.connectionString))
+            {
+                return await db.DeleteAsync(item);
+            }
         }
     }
 }

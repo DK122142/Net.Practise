@@ -17,8 +17,8 @@ namespace DapperTask.Interfaces
 
         // IEnumerable<T> Find(Func<T, Boolean> predicate);
 
-        void Update(T item);
+        Task<bool> Update(T item);
 
-        void Delete(int id);
+        Task<bool> Delete(T item);
     }
 }
