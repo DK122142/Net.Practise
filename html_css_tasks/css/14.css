@@ -1,0 +1,30 @@
+#wrapper{
+	border: 1px solid black;
+	position: relative;
+	width: 200px;
+	height: 380px;
+	margin: 0px auto;
+}
+
+.circle {
+    border: 1px solid black;
+	position: absolute;
+	left: 50px;
+	width: 100px;
+	height: 100px;
+	border-radius: 50px;
+}
+
+#circle1 {
+	background-color: red;
+	top: 50px;
+}
+#circle2 {
+	background-color: yellow;
+	top: 140px;
+}
+
+#circle3 {
+	background-color: green;
+	top: 230px;
+}

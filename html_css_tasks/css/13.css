@@ -1,0 +1,45 @@
+h1 {
+    text-align: center;
+}
+
+#wrapper {
+    width: 95%;
+    border: 1px solid black;
+	margin:30px auto;
+	text-align: justify;
+}
+
+p {
+    font-size: large;
+    padding: 0px 10px;
+}
+
+a:link, a:visited{
+	text-decoration: none;
+	font-weight: bold;
+}
+
+#menu {
+    background-color: gray;
+    height: 30px;
+}
+
+#menu ul{
+	list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+#menu li{
+	float: left;
+    margin-right: 10px;
+}
+
+#menu a:link, #menu a:visited {
+	text-decoration: none;
+	color: white;
+	font: bold 15px Arial;
+	display: block;
+	line-height: 30px;
+	margin: 0px 5px;
+}
