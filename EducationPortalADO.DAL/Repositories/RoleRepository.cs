@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq.Expressions;
 using EducationPortalADO.DAL.Entities;
+using EducationPortalADO.DAL.Infrastructure;
 using EducationPortalADO.DAL.Interfaces;
 
 namespace EducationPortalADO.DAL.Repositories
@@ -9,13 +12,15 @@ namespace EducationPortalADO.DAL.Repositories
     public class RoleRepository : IRepository<Role>
     {
         private readonly string connectionString;
+        private readonly SqlQueryHelper sqlQueryHelper;
 
         public RoleRepository(string connectionString)
         {
             this.connectionString = connectionString;
+            this.sqlQueryHelper = new SqlQueryHelper();
         }
 
-        public IEnumerable<Role> GetTop(int amount)
+        public IEnumerable<Role> GetTopRows(int amount)
         {
             var command = "SELECT TOP @amount * FROM roles_new";
 
@@ -46,7 +51,7 @@ namespace EducationPortalADO.DAL.Repositories
             }
         }
 
-        public Role Get(int id)
+        public Role GetById(int id)
         {
             var command = @"SELECT * FROM roles_new WHERE id = @id";
 
@@ -78,7 +83,14 @@ namespace EducationPortalADO.DAL.Repositories
 
             return default;
         }
-        
+
+        public IEnumerable<Role> Find(Expression<Func<Role, bool>> predicate)
+        {
+            return this.Select($@"SELECT * 
+FROM roles_new
+WHERE {this.sqlQueryHelper.SqlFromPredicate(predicate)}");
+        }
+
         public Role Create(Role item)
         {
             var command = @"INSERT INTO roles_new(type, description)
@@ -166,6 +178,33 @@ namespace EducationPortalADO.DAL.Repositories
                     {
                         var resultTable = new DataTable();
                         adapter.Fill(resultTable);
+                    }
+                }
+            }
+        }
+
+        private IEnumerable<Role> Select(string query)
+        {
+            using (var connection = new SqlConnection(this.connectionString))
+            {
+                using (var cmd = new SqlCommand(query, connection))
+                {
+                    using (var adapter = new SqlDataAdapter(cmd))
+                    {
+                        var resultTable = new DataTable();
+                        adapter.Fill(resultTable);
+
+                        foreach (DataRow row in resultTable.Rows)
+                        {
+                            yield return new Role
+                            {
+                                Id = (int) row.ItemArray[0],
+                                RoleType = (Roles)(int) row.ItemArray[1],
+                                Description = row.ItemArray[2] == null ?
+                                    (string) row.ItemArray[2] :
+                                    string.Empty
+                            };
+                        }
                     }
                 }
             }

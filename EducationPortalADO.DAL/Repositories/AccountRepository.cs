@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq.Expressions;
 using EducationPortalADO.DAL.Entities;
+using EducationPortalADO.DAL.Infrastructure;
 using EducationPortalADO.DAL.Interfaces;
 
 namespace EducationPortalADO.DAL.Repositories
@@ -9,13 +12,15 @@ namespace EducationPortalADO.DAL.Repositories
     public class AccountRepository : IRepository<Account>
     {
         private readonly string connectionString;
+        private readonly SqlQueryHelper sqlQueryHelper;
 
         public AccountRepository(string connectionString)
         {
             this.connectionString = connectionString;
+            this.sqlQueryHelper = new SqlQueryHelper();
         }
 
-        public IEnumerable<Account> GetTop(int amount)
+        public IEnumerable<Account> GetTopRows(int amount)
         {
             var command = @"SELECT TOP @amount * FROM accounts";
 
@@ -37,7 +42,7 @@ namespace EducationPortalADO.DAL.Repositories
                                 Id = (int) row.ItemArray[0],
                                 Login = (string) row.ItemArray[1],
                                 Password = (string) row.ItemArray[2],
-                                Role = (int) row.ItemArray[3]
+                                RoleId = (int) row.ItemArray[3]
                             };
                         }
                     }
@@ -45,7 +50,7 @@ namespace EducationPortalADO.DAL.Repositories
             }
         }
 
-        public Account Get(int id)
+        public Account GetById(int id)
         {
             var command = @"SELECT * FROM accounts WHERE id = @id";
 
@@ -67,7 +72,7 @@ namespace EducationPortalADO.DAL.Repositories
                                 Id = (int) row.ItemArray[0],
                                 Login = (string) row.ItemArray[1],
                                 Password = (string) row.ItemArray[2],
-                                Role = (int) row.ItemArray[3]
+                                RoleId = (int) row.ItemArray[3]
                             };
                         }
                     }
@@ -76,7 +81,14 @@ namespace EducationPortalADO.DAL.Repositories
 
             return default;
         }
-        
+
+        public IEnumerable<Account> Find(Expression<Func<Account, Boolean>> predicate)
+        {
+            return this.Select($@"SELECT * 
+FROM accounts
+WHERE {this.sqlQueryHelper.SqlFromPredicate(predicate)}");
+        }
+
         public Account Create(Account item)
         {
             var command = @"INSERT INTO accounts(login, password, role)
@@ -88,7 +100,8 @@ namespace EducationPortalADO.DAL.Repositories
                 {
                     cmd.Parameters.AddWithValue("@login", item.Login);
                     cmd.Parameters.AddWithValue("@password", item.Password);
-                    cmd.Parameters.AddWithValue("@role", item.Role);
+                    // account role id
+                    cmd.Parameters.AddWithValue("@role", item.RoleId);
 
                     using (var adapter = new SqlDataAdapter(cmd))
                     {
@@ -102,7 +115,7 @@ namespace EducationPortalADO.DAL.Repositories
                                 Id = (int) row.ItemArray[0],
                                 Login = (string) row.ItemArray[1],
                                 Password = (string) row.ItemArray[2],
-                                Role = (int) row.ItemArray[3]
+                                RoleId = (int) row.ItemArray[3]
                             };
                         }
                     }
@@ -124,7 +137,7 @@ namespace EducationPortalADO.DAL.Repositories
                 {
                     cmd.Parameters.AddWithValue("@login", item.Login);
                     cmd.Parameters.AddWithValue("@password", item.Password);
-                    cmd.Parameters.AddWithValue("@role", item.Role);
+                    cmd.Parameters.AddWithValue("@role", item.RoleId);
                     cmd.Parameters.AddWithValue("@id", item.Id);
 
                     using (var adapter = new SqlDataAdapter(cmd))
@@ -139,7 +152,7 @@ namespace EducationPortalADO.DAL.Repositories
                                 Id = (int) row.ItemArray[0],
                                 Login = (string) row.ItemArray[1],
                                 Password = (string) row.ItemArray[2],
-                                Role = (int) row.ItemArray[3]
+                                RoleId = (int) row.ItemArray[3]
                             };
                         }
                     }
@@ -164,6 +177,32 @@ namespace EducationPortalADO.DAL.Repositories
                     {
                         var resultTable = new DataTable();
                         adapter.Fill(resultTable);
+                    }
+                }
+            }
+        }
+
+        private IEnumerable<Account> Select(string query)
+        {
+            using (var connection = new SqlConnection(this.connectionString))
+            {
+                using (var cmd = new SqlCommand(query, connection))
+                {
+                    using (var adapter = new SqlDataAdapter(cmd))
+                    {
+                        var resultTable = new DataTable();
+                        adapter.Fill(resultTable);
+
+                        foreach (DataRow row in resultTable.Rows)
+                        {
+                            yield return new Account
+                            {
+                                Id = (int) row.ItemArray[0],
+                                Login = (string) row.ItemArray[1],
+                                Password = (string) row.ItemArray[2],
+                                RoleId = (int) row.ItemArray[3]
+                            };
+                        }
                     }
                 }
             }
