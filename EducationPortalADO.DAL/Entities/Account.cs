@@ -15,6 +15,6 @@ namespace EducationPortalADO.DAL.Entities
         public string Password { get; set; }
         
         [Column("role")]
-        public int Role { get; set; }
+        public int RoleId { get; set; }
     }
 }
