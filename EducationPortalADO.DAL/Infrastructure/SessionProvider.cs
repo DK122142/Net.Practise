@@ -1,5 +1,4 @@
 ﻿using EducationPortalADO.DAL.Entities;
-using EducationPortalADO.DAL.Services;
 
 namespace EducationPortalADO.DAL.Infrastructure
 {
