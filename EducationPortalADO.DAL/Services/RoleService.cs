@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 using EducationPortalADO.DAL.Entities;
 using EducationPortalADO.DAL.Interfaces;
 
@@ -6,7 +8,7 @@ namespace EducationPortalADO.DAL.Services
 {
     public class RoleService : IService<Role>
     {
-        private IRepository<Role> repository;
+        private readonly IRepository<Role> repository;
 
         public RoleService(IRepository<Role> repository)
         {
@@ -18,14 +20,19 @@ namespace EducationPortalADO.DAL.Services
             return this.repository.Create(item);
         }
 
-        public IEnumerable<Role> GetTop(int amount)
+        public IEnumerable<Role> GetTopRows(int amount)
         {
-            return this.repository.GetTop(amount);
+            return this.repository.GetTopRows(amount);
         }
 
-        public Role Get(int id)
+        public Role GetById(int id)
         {
-            return this.repository.Get(id);
+            return this.repository.GetById(id);
+        }
+
+        public IEnumerable<Role> Find(Expression<Func<Role, bool>> predicate)
+        {
+            return this.repository.Find(predicate);
         }
 
         public Role Update(Role item)

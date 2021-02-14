@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 using EducationPortalADO.DAL.Entities;
 using EducationPortalADO.DAL.Interfaces;
 
@@ -6,7 +8,7 @@ namespace EducationPortalADO.DAL.Services
 {
     public class AccountService : IService<Account>
     {
-        private IRepository<Account> repository;
+        private readonly IRepository<Account> repository;
 
         public AccountService(IRepository<Account> repository)
         {
@@ -18,16 +20,21 @@ namespace EducationPortalADO.DAL.Services
             return this.repository.Create(item);
         }
 
-        public IEnumerable<Account> GetTop(int amount)
+        public IEnumerable<Account> GetTopRows(int amount)
         {
-            return this.repository.GetTop(amount);
+            return this.repository.GetTopRows(amount);
         }
 
-        public Account Get(int id)
+        public Account GetById(int id)
         {
-            return this.repository.Get(id);
+            return this.repository.GetById(id);
         }
 
+        public IEnumerable<Account> Find(Expression<Func<Account, bool>> predicate)
+        {
+            return this.repository.Find(predicate);
+        }
+        
         public Account Update(Account item)
         {
             return this.repository.Update(item);

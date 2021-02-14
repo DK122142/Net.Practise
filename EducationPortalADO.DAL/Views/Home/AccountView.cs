@@ -1,7 +1,9 @@
 ﻿using System;
 using EducationPortalADO.DAL.Entities;
 using EducationPortalADO.DAL.Infrastructure;
+using EducationPortalADO.DAL.Interfaces;
 using EducationPortalADO.DAL.Views.Shared;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EducationPortalADO.DAL.Views.Home
 {
@@ -11,6 +13,8 @@ namespace EducationPortalADO.DAL.Views.Home
         {
             string login;
             string password;
+
+            var accountService = ServiceModule.ServiceProvider.GetRequiredService<IService<Account>>();
 
             Console.Clear();
             Header.Show();
@@ -40,16 +44,16 @@ namespace EducationPortalADO.DAL.Views.Home
                     Console.WriteLine("Input your password: ");
                     password = Console.ReadLine();
 
-                    Provider.AccountService.Create(new Entities.Account
+                    accountService.Create(new Entities.Account
                     {
                         Login = login,
                         Password = PasswordHasher.HashPassword(password)
                     });
                     break;
                 case 3:
-                    foreach (var account in Provider.AccountService.GetTop(100))
+                    foreach (var account in accountService.GetTopRows(100))
                     {
-                        Console.WriteLine($"{account.Id}, {account.Login}, {account.Password}, {(Roles)account.Role}");
+                        Console.WriteLine($"{account.Id}, {account.Login}, {account.Password}, {(Roles)account.RoleId}");
                     }
 
                     Console.ReadLine();
