@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace EducationPortalADO.DAL.Interfaces
 {
@@ -6,10 +8,17 @@ namespace EducationPortalADO.DAL.Interfaces
     {
         T Create(T item);
 
-        IEnumerable<T> GetTop(int amount);
+        /// <summary>
+        /// Method gets specified amount of rows from the table.
+        /// </summary>
+        /// <param name="amount"> Number of rows to get from table </param>
+        /// <returns>List of entities</returns>
+        IEnumerable<T> GetTopRows(int amount);
+        
+        T GetById(int id);
 
-        T Get(int id);
-
+        IEnumerable<T> Find(Expression<Func<T, Boolean>> predicate);
+        
         T Update(T item);
 
         void Delete(int id);
