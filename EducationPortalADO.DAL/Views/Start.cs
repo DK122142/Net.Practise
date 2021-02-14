@@ -11,25 +11,6 @@ namespace EducationPortalADO.DAL.Views
     {
         public Start()
         {
-            IConfiguration configuration;
-
-            try
-            {
-                configuration = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("config.json", false)
-                    .Build();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Connection string not found in file config.json. Place file in folder with .exe");
-                throw;
-            }
-
-            Provider.ConnectionString = configuration.GetSection("connectionString").Value;
-            Provider.AccountService = new AccountService(new AccountRepository(Provider.ConnectionString));
-            Provider.RoleService = new RoleService(new RoleRepository(Provider.ConnectionString));
-
             Home.Home.Show();
         }
     }

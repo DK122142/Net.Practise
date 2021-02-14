@@ -1,4 +1,8 @@
-﻿using EducationPortalADO.DAL.Views;
+﻿using System.Collections.Generic;
+using System.Linq;
+using EducationPortalADO.DAL.Entities;
+using EducationPortalADO.DAL.Infrastructure;
+using EducationPortalADO.DAL.Views;
 
 namespace EducationPortalADO.DAL
 {
