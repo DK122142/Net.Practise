@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Linq2_2
+﻿namespace Linq2_2
 {
     class Program
     {

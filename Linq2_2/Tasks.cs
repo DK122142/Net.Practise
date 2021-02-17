@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Linq2_2
 {
     public static class Tasks
     {
+        private static ActorComparer actorEqC = new ActorComparer();
+
         public static List<object> data = new List<object> {
             "Hello",
             new Article { Author = "Hilgendorf", Name = "Punitive law and criminal law doctrine.", Pages = 44 },
@@ -28,29 +28,21 @@ namespace Linq2_2
 
         public static void Task1()
         {
-            Console.WriteLine(string.Join(",", data.OfType<Film>()
-                .SelectMany(f => f.Actors)
-                .GroupBy(a => a.Name)
-                .Select(x => x.FirstOrDefault())
-                .Select(a => a.Name)));
+            Console.WriteLine(string.Join(",",
+                data.OfType<Film>().SelectMany(f => f.Actors.Select(a => a.Name)).Distinct()));
         }
 
         public static void Task2()
         {
-            Console.WriteLine(data.OfType<Film>().SelectMany(f => f.Actors)
-                .GroupBy(a => a.Name)
-                .Select(x => x.FirstOrDefault())
-                .Count(a => a.Birthdate.Month.Equals(8)));
+            Console.WriteLine(data.OfType<Film>().SelectMany(f => f.Actors.Where(a => a.Birthdate.Month == 8))
+                .Distinct(actorEqC).Count());
         }
 
         public static void Task3()
         {
-            Console.WriteLine(string.Join(",",data.OfType<Film>().SelectMany(f => f.Actors)
-                .GroupBy(a => a.Name)
-                .Select(x => x.FirstOrDefault())
-                .OrderBy(a => a.Birthdate)
-                .Select(a => a.Name)
-                .ToArray()[..2].ToList()));
+            Console.WriteLine(string.Join(",",
+                data.OfType<Film>().SelectMany(f => f.Actors).Distinct(actorEqC).OrderBy(a => a.Birthdate).Take(2)
+                    .Select(a => a.Name)));
         }
         
         public static void Task4()
@@ -77,10 +69,9 @@ namespace Linq2_2
         
         public static void Task6()
         {
-            Console.WriteLine(string.Join("",data.OfType<Film>().SelectMany(f => f.Actors)
-                    .GroupBy(a => a.Name)
-                    .Select(x => x.FirstOrDefault()))
-                    .Replace(" ","").Distinct().Count());
+            Console.WriteLine(string.Join("",
+                data.OfType<Film>().SelectMany(f => f.Actors.Select(a => a.Name.Replace(" ", "").ToLower())).Distinct()
+                    .Count()));
         }
 
         public static void Task7()
@@ -91,21 +82,22 @@ namespace Linq2_2
         
         public static void Task8()
         {
-            var output = data.OfType<Film>().SelectMany(f => f.Actors)
-                .GroupBy(a => a.Name)
-                .Select(x => x.FirstOrDefault())
-                .GroupBy(act => data.OfType<Film>().Where(f => f.Actors.Contains(act)));
+            var filmsOfActors = data.OfType<Film>().SelectMany(f => f.Actors.Select(a => a.Name)).Distinct().GroupBy(n => n)
+                .Select(g => new
+                {
+                    Actor = g.Key,
+                    Films = data.OfType<Film>().Where(f => f.Actors.Any(a => a.Name == g.Key))
+                });
 
-            foreach (var i in output)
+            foreach (var filmsOfActor in filmsOfActors)
             {
-                Console.WriteLine($"{i.FirstOrDefault().Name}: {i.Key.FirstOrDefault().Name}");
+                Console.WriteLine($"{filmsOfActor.Actor}: {string.Join(",", filmsOfActor.Films.Select(f => f.Name))}");
             }
-            
         }
         
         public static void Task9()
         {
-            var sumOfInts = data.OfType<List<int>>().Select(e => e.Sum()).Sum();
+            var sumOfInts = data.OfType<List<int>>().SelectMany(e => e).Sum();
             var sumOfPages = data.OfType<Article>().Select(a => a.Pages).Sum();
 
             Console.WriteLine(sumOfInts + sumOfPages);
@@ -113,18 +105,12 @@ namespace Linq2_2
         
         public static void Task10()
         {
-            var dict = data.OfType<Article>()
-                .GroupBy(a => a.Author)
-                .ToDictionary(g => g.Key, g => g.ToList());
+            var dict = data.OfType<Article>().GroupBy(a => a.Author)
+                .ToDictionary(author => author.Key, articles => articles.ToList());
 
             foreach (var record in dict)
             {
-                Console.Write($"{record.Key}: ");
-                foreach (var article in record.Value)
-                {
-                    Console.Write(article.Name);
-                }
-                Console.WriteLine();
+                Console.WriteLine($"{record.Key}: {string.Join(",", record.Value.Select(a => a.Name))}");
             }
         }
     }
