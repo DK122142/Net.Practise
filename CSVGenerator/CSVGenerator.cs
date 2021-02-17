@@ -18,10 +18,10 @@ namespace CSVGenerator
                 new(Guid.NewGuid(), "Mary", 24)
             };
 
-            var fields = Service.GetFields();
+            var fields = ReflectionUtil.GetFields();
             Console.WriteLine("Input string of field names, separated by commas");
             string fieldNames = Console.ReadLine();
-            var useFields = Service.SplitFieldNames(fieldNames);
+            var useFields = ReflectionUtil.SplitFieldNames(fieldNames);
             var records = new List<List<string>>();
 
             foreach (var person in persons)
@@ -29,7 +29,7 @@ namespace CSVGenerator
                 var record = new List<string>();
                 foreach (var useField in useFields)
                 {
-                    record.Add(Service.ValueByFieldName(person,useField,fields));
+                    record.Add(ReflectionUtil.ValueByFieldName(person,useField,fields));
                 }
                 records.Add(record);
             }
