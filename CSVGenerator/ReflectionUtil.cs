@@ -4,40 +4,36 @@ namespace CSVGenerator
 {
     public class ReflectionUtil
     {
-        public static List<string> GetFields()
+        public static IEnumerable<string> GetPersonProperties()
         {
-            var fields = typeof(Person).GetFields();
-            var result = new List<string>();
-
-            foreach (var field in fields)
+            foreach (var propertyInfo in typeof(Person).GetProperties())
             {
-                result.Add(field.Name);
+                yield return propertyInfo.Name.ToLower();
             }
-
-            return result;
         }
 
-        public static List<string> SplitFieldNames(string fields)
+        public static IEnumerable<string> SplitPropertyNames(string properties)
         {
-            var fieldNames = fields.Trim().Split(",");
-            var result = new List<string>();
-
-            foreach (var fieldName in fieldNames)
+            foreach (var propertyName in properties.Trim().Split(","))
             {
-                result.Add(fieldName.Trim().ToLower());
+                yield return propertyName.Trim().ToLower();
             }
-            
-            return result;
         }
 
-        public static string ValueByFieldName (Person instance, string field, List<string> fields)
+        public static string GetValueByFieldName (Person instance, string field, List<string> fields)
         {
             if (fields.Contains(field))
             {
-                return typeof(Person).GetField(field).GetValue(instance).ToString();
+                var value = typeof(Person).GetProperty($"{char.ToUpper(field[0])}{field.Substring(1)}")
+                    .GetValue(instance);
+
+                if (value != null)
+                {
+                    return value.ToString();
+                }
             }
 
-            return default;
+            return string.Empty;
         }
     }
 }
