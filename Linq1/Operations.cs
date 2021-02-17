@@ -33,12 +33,10 @@ namespace Linq1
             return customers.Where(customer => customer.Name.ToLower().Contains(input.ToLower()));
         }
 
-        public static IEnumerable<IOrderedEnumerable<Customer>> SimilarMonthCustomers(List<Customer> customers)
+        public static IEnumerable<IGrouping<int, Customer>> SimilarMonthCustomers(List<Customer> customers)
         {
-            return customers.OrderBy(customer => 
-                customer.RegistrationDate).GroupBy(byDate => 
-                byDate.RegistrationDate.Month).Select(g => 
-                g.OrderBy(c => c.Name));
+            return customers.OrderBy(c => c.RegistrationDate.Month).ThenBy(c => c.Name)
+                .GroupBy(c => c.RegistrationDate.Month);
         }
 
         public static IEnumerable<Customer> ByField(List<Customer> customers, string field, bool isDescending = false)

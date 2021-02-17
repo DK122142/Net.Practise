@@ -6,14 +6,14 @@ namespace Linq1
     {
         static void Main(string[] args)
         {
-            Task.A();
-            Task.B();
-            Task.C();
-            Task.D();
-            Task.E();
+            // Task.A();
+            // Task.B();
+            // Task.C();
+            // Task.D();
+            // Task.E();
             Task.F();
-            Task.G();
-            Task.H();
+            // Task.G();
+            // Task.H();
         }
     }
 }
