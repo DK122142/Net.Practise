@@ -47,9 +47,9 @@ namespace Linq2
             // Tasks.Task10();
             // Console.WriteLine();
             
-            // Console.WriteLine("Выведите последнее слово в последовательности, за исключением первых двух элементов, заканчивающихся на «bb».");
-            // Tasks.Task11();
-            // Console.WriteLine();
+            Console.WriteLine("Выведите последнее слово в последовательности, за исключением первых двух элементов, заканчивающихся на «bb».");
+            Tasks.Task11();
+            Console.WriteLine();
         }
     }
 }
