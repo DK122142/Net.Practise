@@ -1,3 +1,10 @@
+* {
+    text-align: justify;
+}
+
+h4 {
+    font-weight: bold;
+}
 
 p.card-text {
     white-space: nowrap;
