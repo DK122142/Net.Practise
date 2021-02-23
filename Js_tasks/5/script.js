@@ -1,6 +1,6 @@
 let addRuBefore = (str) => {
 
-    if (str == '' || str.startsWith("Ру")) {
+    if (str === '' || str.startsWith("Ру")) {
         return str;
     }
 
