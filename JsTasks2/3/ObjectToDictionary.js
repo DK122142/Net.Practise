@@ -9,7 +9,4 @@ export const ObjToDict = (obj) => {
     }
 
     return result;
-    // return Object.entries(obj);
 }
-
-// console.log(ObjToDict(new Square(12)));

@@ -1,11 +1,11 @@
-import Shape from './Shape.js';
+import { Shape } from './Shape.js';
 
-export default class Circle extends Shape {
+export const Circle = {
+    __proto__: Shape,
+    radius: 0,
     constructor(radius) {
-        super();
         this.radius = radius;
-    }
-
+    },
     Area() {
         return Math.PI * this.radius ** 2;
     }

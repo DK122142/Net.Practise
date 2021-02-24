@@ -1,11 +1,11 @@
-import Shape from './Shape.js';
+import { Shape } from './Shape.js';
 
-export default class Square extends Shape {
+export const Square = {
+    __proto__: Shape,
+    side: 0,
     constructor(side) {
-        super();
         this.side = side;
-    }
-
+    },
     Area() {
         return this.side ** 2;
     }
