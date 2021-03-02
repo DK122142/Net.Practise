@@ -6,18 +6,18 @@ namespace EF.CodeFirst.EF
     public class ApplicationDbContext : DbContext
     {
         public DbSet<Employee> Employees { get; set; }
-        public DbSet<Person> Persons { get; set; }
-        public DbSet<EmployeePayHistory> EmployeePayHistories { get; set; }
-        public DbSet<SalesPerson> SalesPersons { get; set; }
-        public DbSet<JobCandidate> JobCandidates { get; set; }
-        public DbSet<Shift> Shifts { get; set; }
-        public DbSet<Department> Departments { get; set; }
 
-        // public ApplicationDbContext()
-        // {
-        //     Database.EnsureDeleted();
-        //     Database.EnsureCreated();
-        // }
+        public DbSet<Person> Persons { get; set; }
+
+        public DbSet<EmployeePayHistory> EmployeePayHistories { get; set; }
+
+        public DbSet<SalesPerson> SalesPersons { get; set; }
+
+        public DbSet<JobCandidate> JobCandidates { get; set; }
+
+        public DbSet<Shift> Shifts { get; set; }
+
+        public DbSet<Department> Departments { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
