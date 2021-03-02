@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using DapperTask.Interfaces;
 using DapperTask.Models;
@@ -28,29 +23,32 @@ namespace DapperTask.Utils.UserDateHiding
 
         public async Task HideUserData()
         {
-            var users = await this.UserRepository.GetAll();
-            var user = users.FirstOrDefault(u => u.Email == this.email);
+            var user = await this.UserRepository.FindAsync(u => u.Email, this.email);
 
             if (user != null)
             {
-                await this.UserRepository.Update(new User
+                await this.UserRepository.UpdateAsync(new User
                 {
-                    Id = user.Id,
+                    Id = user.FirstOrDefault().Id,
                     Name = this.replaceBy,
                     Surname = this.replaceBy,
                     Email = this.replaceBy,
-                    DateOfBirth = user.DateOfBirth
+                    DateOfBirth = user.FirstOrDefault().DateOfBirth
                 });
             }
         }
 
         public async Task HideMailObjectData()
         {
-            var allMails = await this.MailRepository.GetAll();
-            var mails = allMails.Where(m =>
-                JsonConvert.DeserializeObject<MailObject>(m.Object).From == email ||
-                JsonConvert.DeserializeObject<MailObject>(m.Object).To == email);
+            var mails = new List<Mail>();
 
+            mails.AddRange(
+                await this.MailRepository.FindAsync(m => JsonConvert.DeserializeObject<MailObject>(m.Object).From,
+                    this.email));
+            mails.AddRange(
+                await this.MailRepository.FindAsync(m => JsonConvert.DeserializeObject<MailObject>(m.Object).To,
+                    this.email));
+            
             foreach (var mail in mails)
             {
                 var mailObject = JsonConvert.DeserializeObject<MailObject>(mail.Object);
@@ -65,7 +63,7 @@ namespace DapperTask.Utils.UserDateHiding
                     mailObject.To = replaceBy;
                 }
 
-                await this.MailRepository.Update(new Mail
+                await this.MailRepository.UpdateAsync(new Mail
                 {
                     Id = mail.Id,
                     Object = JsonConvert.SerializeObject(mailObject)

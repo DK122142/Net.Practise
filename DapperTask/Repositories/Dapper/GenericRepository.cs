@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Dapper;
 using Dapper.Contrib.Extensions;
+using DapperExtensions;
 using DapperTask.Interfaces;
-using DapperTask.Models;
 using Microsoft.Data.SqlClient;
 
 namespace DapperTask.Repositories.Dapper
@@ -20,43 +18,45 @@ namespace DapperTask.Repositories.Dapper
             this.connectionString = connectionString;
         }
 
-        public async Task Create(T item)
+        public async Task CreateAsync(T item)
         {
             using (var db = new SqlConnection(this.connectionString))
             {
-                await db.InsertAsync(item);
+                await SqlMapperExtensions.InsertAsync(db, item);
             }
         }
 
-        public async Task<IEnumerable<T>> GetAll()
+        public async Task<T> GetAsync(int id)
         {
             using (var db = new SqlConnection(this.connectionString))
             {
-                return await db.GetAllAsync<T>();
+                return await SqlMapperExtensions.GetAsync<T>(db, id);
             }
         }
 
-        public async Task<T> Get(int id)
+        public async Task<IEnumerable<T>> FindAsync<TValue>(Expression<Func<T, object>> expression, TValue value)
         {
             using (var db = new SqlConnection(this.connectionString))
             {
-                return await db.GetAsync<T>(id);
-            }
-        }
-        
-        public async Task<bool> Update(T item)
-        {
-            using (var db = new SqlConnection(this.connectionString))
-            {
-                return await db.UpdateAsync(item);
+                var predicate = Predicates.Field<T>(expression, Operator.Eq, value);
+                return await db.GetListAsync<T>(predicate);
             }
         }
 
-        public async Task<bool> Delete(T item)
+
+        public async Task<bool> UpdateAsync(T item)
         {
             using (var db = new SqlConnection(this.connectionString))
             {
-                return await db.DeleteAsync(item);
+                return await SqlMapperExtensions.UpdateAsync(db, item);
+            }
+        }
+
+        public async Task<bool> DeleteAsync(T item)
+        {
+            using (var db = new SqlConnection(this.connectionString))
+            {
+                return await SqlMapperExtensions.DeleteAsync(db, item);
             }
         }
     }

@@ -1,24 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
-using DapperTask.Models;
 
 namespace DapperTask.Interfaces
 {
     public interface IRepository<T> where T : class
     {
-        Task Create(T item);
+        Task CreateAsync(T item);
 
-        Task<IEnumerable<T>> GetAll();
+        Task<T> GetAsync(int id);
 
-        Task<T> Get(int id);
+        Task<IEnumerable<T>> FindAsync<TValue>(Expression<Func<T, object>> expression, TValue value);
 
-        // IEnumerable<T> Find(Func<T, Boolean> predicate);
+        Task<bool> UpdateAsync(T item);
 
-        Task<bool> Update(T item);
-
-        Task<bool> Delete(T item);
+        Task<bool> DeleteAsync(T item);
     }
 }
