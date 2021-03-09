@@ -6,7 +6,9 @@ namespace PhoneBook.Models
     {
         public Guid Id { get; set; }
 
-        // Relevant, Irrelevant, Requires clarification
+        /// <summary>
+        ///  Relevant, Irrelevant, Requires clarification
+        /// </summary>
         public string StatusType { get; set; }
     }
 }
