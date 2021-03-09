@@ -1,6 +1,4 @@
-using System;
-
-namespace PhoneBook.Models
+namespace PhoneBook.ViewModels
 {
     public class ErrorViewModel
     {
