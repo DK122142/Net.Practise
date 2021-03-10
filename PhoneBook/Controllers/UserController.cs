@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -13,10 +12,10 @@ namespace PhoneBook.Controllers
 {
     public class UserController : Controller
     {
-        private IUserService service;
+        private IAuthService service;
         private IMapper mapper;
 
-        public UserController(IUserService service, IMapper mapper)
+        public UserController(IAuthService service, IMapper mapper)
         {
             this.service = service;
             this.mapper = mapper;
