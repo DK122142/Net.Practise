@@ -1,0 +1,37 @@
+﻿@using PhoneBook.ViewModels
+@model PhoneBook.ViewModels.IndexViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+<h1>Phone Numbers</h1>
+<p><a asp-action="Create">Add phone number</a></p>
+<table class="table">
+    <tr><th>Number</th><th>Address</th><th>Status</th><th>Added</th></tr>
+    @foreach (PhoneNumberViewModel pn in Model.PhoneNumbers)
+    {
+        <tr><td>@pn.Number</td><td>@pn.Address</td><td>@pn.Status</td><td>@pn.Added</td><td>
+            
+            <li class="page-item" @(ViewBag.AuthorizedUserId != pn.CreatorId ? "hidden" : string.Empty) >
+                <a asp-action="Edit" asp-route-id="@pn.Id">Edit</a> |
+                <a asp-action="Delete" asp-route-id="@pn.Id">Delete</a>
+            </li>
+        </td>
+            </tr>
+    }
+</table>
+@if (Model.PageViewModel.HasPreviousPage)
+{
+    <a asp-action="Index"
+       asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+       class="btn btn-outline-dark">
+        Назад
+    </a>
+}
+@if (Model.PageViewModel.HasNextPage)
+{
+    <a asp-action="Index"
+       asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+       class="btn btn-outline-dark">
+        Вперед
+    </a>
+}
