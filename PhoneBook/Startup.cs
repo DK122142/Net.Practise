@@ -1,13 +1,16 @@
+using AutoMapper.Extensions.ExpressionMapping;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using PhoneBook.EF;
+using PhoneBook.Mapping;
+using PhoneBook.Services;
+using PhoneBook.Services.Interfaces;
 
 namespace PhoneBook
 {
@@ -24,6 +27,21 @@ namespace PhoneBook
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddDbContext<PhoneBookContext>(options =>
+                options.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddProfile<MappingProfile>();
+                cfg.AddExpressionMapping();
+            });
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(opt => opt.LoginPath = new PathString("/User/Login"));
+
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IPhoneBookService, PhoneBookService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,6 +62,7 @@ namespace PhoneBook
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
