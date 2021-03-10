@@ -1,12 +1,9 @@
-﻿using System.Threading.Tasks;
-using PhoneBook.ViewModels;
+﻿using PhoneBook.Models;
 
 namespace PhoneBook.Services.Interfaces
 {
-    public interface IUserService
+    public interface IUserService : IService<User>
     {
-        Task<bool> Register(AuthViewModel model);
         
-        Task<LoginResultViewModel> Login(AuthViewModel model);
     }
 }

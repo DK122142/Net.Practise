@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace PhoneBook.Models
 {
-    public class User
+    public class User : IEntity
     {
         public Guid Id { get; set; }
 

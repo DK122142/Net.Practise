@@ -2,7 +2,7 @@
 
 namespace PhoneBook.Models
 {
-    public class PhoneNumberStatus
+    public class PhoneNumberStatus : IEntity
     {
         public Guid Id { get; set; }
 

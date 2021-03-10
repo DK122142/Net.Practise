@@ -20,7 +20,7 @@ namespace PhoneBook.Services
             this.context = context;
         }
 
-        public async Task Create(PhoneNumber item, Guid userId)
+        public async Task Create(PhoneNumber item)
         {
             await this.context.PhoneNumbers.AddAsync(item);
             await this.context.SaveChangesAsync();
@@ -57,9 +57,9 @@ namespace PhoneBook.Services
             await this.context.SaveChangesAsync();
         }
 
-        public IEnumerable<PhoneNumber> GetPageOfPhoneNumbers(int skip, int take)
+        public async Task<IEnumerable<PhoneNumber>> GetPageOfPhoneNumbers(int skip, int take)
         {
-            return this.context.PhoneNumbers.Skip(skip).Take(take);
+            return await this.context.PhoneNumbers.Skip(skip).Take(take).ToListAsync();
         }
 
         public async Task<int> TotalPhoneNumbers()

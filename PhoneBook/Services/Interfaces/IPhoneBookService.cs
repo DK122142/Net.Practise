@@ -7,7 +7,7 @@ namespace PhoneBook.Services.Interfaces
 {
     public interface IPhoneBookService
     {
-        Task Create(PhoneNumber item, Guid userId);
+        Task Create(PhoneNumber item);
         
         Task<PhoneNumber> GetById(Guid id);
 
@@ -15,7 +15,7 @@ namespace PhoneBook.Services.Interfaces
 
         Task Delete(Guid id, Guid userId);
 
-        IEnumerable<PhoneNumber> GetPageOfPhoneNumbers(int skip, int take);
+        Task<IEnumerable<PhoneNumber>> GetPageOfPhoneNumbers(int skip, int take);
 
         Task<int> TotalPhoneNumbers();
     }
