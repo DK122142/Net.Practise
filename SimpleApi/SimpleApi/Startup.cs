@@ -1,8 +1,13 @@
+using App.DataAccess.Context;
+using App.DataAccess.Repository;
+using AutoMapper.Extensions.ExpressionMapping;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SimpleApi.MappingProfiles;
 
 namespace SimpleApi
 {
@@ -18,7 +23,18 @@ namespace SimpleApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<AppContext>(o =>
+            {
+                o.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
 
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddProfile<MappingProfile>();
+                cfg.AddExpressionMapping();
+            });
 
             services.AddControllers();
 
