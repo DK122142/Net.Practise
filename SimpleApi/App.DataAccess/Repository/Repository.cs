@@ -9,7 +9,7 @@ using AppContext = App.DataAccess.Context.AppContext;
 
 namespace App.DataAccess.Repository
 {
-    internal class Repository<T> : IRepository<T> where T : BaseEntity
+    public class Repository<T> : IRepository<T> where T : BaseEntity
     {
         private readonly AppContext dbContext;
 
@@ -18,19 +18,21 @@ namespace App.DataAccess.Repository
             this.dbContext = dbContext;
         }
 
-        public Task CreateAsync(T entity)
+        public async Task CreateAsync(T entity)
         {
-            throw new NotImplementedException();
+            await this.dbContext.Set<T>().AddAsync(entity);
+            await this.dbContext.SaveChangesAsync();
         }
 
-        public Task UpdateAsync(T entity)
+        public async Task UpdateAsync(T entity)
         {
-            throw new NotImplementedException();
+            // this.dbContext.Set<T>().Update(entity);
+            await this.dbContext.SaveChangesAsync();
         }
 
-        public Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> expression)
+        public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> expression)
         {
-            throw new NotImplementedException();
+            return await this.dbContext.Set<T>().Where(expression).ToListAsync();
         }
 
         public async Task<T> GetByIdWithIncludesAsync(int id, IEnumerable<Expression<Func<T, dynamic>>> includes = null, bool isNoTracking = true)
@@ -43,6 +45,11 @@ namespace App.DataAccess.Repository
             }
 
             return await query.FirstOrDefaultAsync(c => c.Id == id);
+        }
+
+        public async Task<bool> ExistsAsync(Expression<Func<T, bool>> expression)
+        {
+            return await this.dbContext.Set<T>().AnyAsync(expression);
         }
     }
 }

@@ -14,5 +14,7 @@ namespace App.DataAccess.Repository
         Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> expression);
 
         Task<T> GetByIdWithIncludesAsync(int id, IEnumerable<Expression<Func<T, dynamic>>> includes = null, bool isNoTracking = true);
+
+        Task<bool> ExistsAsync(Expression<Func<T, bool>> expression);
     }
 }
