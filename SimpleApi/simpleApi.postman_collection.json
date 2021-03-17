@@ -296,7 +296,7 @@
 			"response": []
 		},
 		{
-			"name": "New Request",
+			"name": "update contract",
 			"request": {
 				"method": "PUT",
 				"header": [],

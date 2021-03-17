@@ -62,12 +62,12 @@ namespace SimpleApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(ContractCreateDto contractCreateDto)
         {
-            if (!await this.customerRepository.ExistsAsync(c => c.Id.Equals(contractCreateDto.CustomerId)))
+            if (await this.customerRepository.GetByIdWithIncludesAsync(contractCreateDto.CustomerId) == null)
             {
                 return BadRequest();
             }
 
-            if (!await this.deliveryRepository.ExistsAsync(d => d.Id.Equals(contractCreateDto.DeliveryId)))
+            if (await this.deliveryRepository.GetByIdWithIncludesAsync(contractCreateDto.DeliveryId) == null)
             {
                 return BadRequest();
             }
@@ -109,12 +109,12 @@ namespace SimpleApi.Controllers
                 return BadRequest();
             }
             
-            if (!await this.customerRepository.ExistsAsync(c => c.Id.Equals(contractCreateDto.CustomerId)))
+            if (await this.customerRepository.GetByIdWithIncludesAsync(contractCreateDto.CustomerId) == null)
             {
                 return BadRequest();
             }
 
-            if (!await this.deliveryRepository.ExistsAsync(d => d.Id.Equals(contractCreateDto.DeliveryId)))
+            if (await this.deliveryRepository.GetByIdWithIncludesAsync(contractCreateDto.DeliveryId) == null)
             {
                 return BadRequest();
             }

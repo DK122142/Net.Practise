@@ -46,10 +46,5 @@ namespace App.DataAccess.Repository
 
             return await query.FirstOrDefaultAsync(c => c.Id == id);
         }
-
-        public async Task<bool> ExistsAsync(Expression<Func<T, bool>> expression)
-        {
-            return await this.dbContext.Set<T>().AnyAsync(expression);
-        }
     }
 }
