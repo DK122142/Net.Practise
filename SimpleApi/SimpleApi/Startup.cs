@@ -1,6 +1,7 @@
 using App.DataAccess.Context;
 using App.DataAccess.Repository;
 using AutoMapper.Extensions.ExpressionMapping;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -36,7 +37,11 @@ namespace SimpleApi
                 cfg.AddExpressionMapping();
             });
 
-            services.AddControllers();
+            services.AddControllers()
+                .AddFluentValidation(conf =>
+                {
+                    conf.RegisterValidatorsFromAssemblyContaining<Startup>();
+                });
 
             services.AddSwaggerGen();
         }

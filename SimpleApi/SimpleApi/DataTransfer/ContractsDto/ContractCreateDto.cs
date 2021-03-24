@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SimpleApi.DataTransfer.ContractsDto
 {
@@ -7,6 +8,8 @@ namespace SimpleApi.DataTransfer.ContractsDto
         public int CustomerId { get; set; }
 
         public int DeliveryId { get; set; }
+
+        public DateTime Date { get; set; }
 
         public IEnumerable<int> ItemId { get; set; }
     }
