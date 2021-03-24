@@ -26,7 +26,7 @@ namespace App.DataAccess.Repository
 
         public async Task UpdateAsync(T entity)
         {
-            // this.dbContext.Set<T>().Update(entity);
+            this.dbContext.Entry(entity).State = EntityState.Modified;
             await this.dbContext.SaveChangesAsync();
         }
 
