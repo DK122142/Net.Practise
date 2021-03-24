@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using App.Core.Entity;
 using App.Core.Enumeration;
@@ -18,12 +15,12 @@ namespace SimpleApi.Controllers
     public class DeliveryController : ControllerBase
     {
         
-        private IRepository<Delivery> repository;
-        private IMapper mapper;
+        private readonly IRepository<Delivery> deliveryRepository;
+        private readonly IMapper mapper;
 
-        public DeliveryController(IRepository<Delivery> repository, IMapper mapper)
+        public DeliveryController(IRepository<Delivery> deliveryRepository, IMapper mapper)
         {
-            this.repository = repository;
+            this.deliveryRepository = deliveryRepository;
             this.mapper = mapper;
         }
 
@@ -31,7 +28,7 @@ namespace SimpleApi.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get(int id)
         {
-            var delivery = await this.repository.GetByIdWithIncludesAsync(id);
+            var delivery = await this.deliveryRepository.GetByIdWithIncludesAsync(id);
 
             if (delivery == null)
             {
@@ -45,14 +42,14 @@ namespace SimpleApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(DeliveryCreateDto delivery)
         {
-            if (delivery == null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(delivery);
             }
 
             var entity = this.mapper.Map<Delivery>(delivery);
 
-            await this.repository.CreateAsync(entity);
+            await this.deliveryRepository.CreateAsync(entity);
 
             return Ok(delivery);
         }
@@ -61,12 +58,17 @@ namespace SimpleApi.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Put(int id, DeliveryDto delivery)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(delivery);
+            }
+
             if (id != delivery.Id)
             {
                 return BadRequest();
             }
 
-            var entity = await this.repository.GetByIdWithIncludesAsync(delivery.Id, isNoTracking:false);
+            var entity = await this.deliveryRepository.GetByIdWithIncludesAsync(delivery.Id, isNoTracking:false);
 
             if (entity == null)
             {
@@ -76,7 +78,7 @@ namespace SimpleApi.Controllers
             entity.Address = delivery.Address;
             entity.TypeDelivery = (DeliveryType) delivery.TypeDelivery;
 
-            await this.repository.UpdateAsync(entity);
+            await this.deliveryRepository.UpdateAsync(entity);
 
             return Ok(delivery);
         }

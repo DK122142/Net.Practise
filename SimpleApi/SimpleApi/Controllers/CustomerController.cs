@@ -11,41 +11,39 @@ namespace SimpleApi.Controllers
     [ApiController]
     public class CustomerController : ControllerBase
     {
-        private IRepository<Customer> repository;
-        private IMapper mapper;
+        private readonly IRepository<Customer> customerRepository;
+        private readonly IMapper mapper;
 
-        public CustomerController(IRepository<Customer> repository, IMapper mapper)
+        public CustomerController(IRepository<Customer> customerRepository, IMapper mapper)
         {
-            this.repository = repository;
+            this.customerRepository = customerRepository;
             this.mapper = mapper;
         }
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get(int id)
         {
-            var customer = await this.repository.GetByIdWithIncludesAsync(id);
+            var customer = await this.customerRepository.GetByIdWithIncludesAsync(id);
 
             if (customer == null)
             {
                 return NotFound();
             }
-
-            // var resultCustomer = this.mapper.Map<CustomerDto>(customer);
-
+            
             return new ObjectResult(customer);
         }
 
         [HttpPost]
         public async Task<IActionResult> Post(CustomerCreateDto customer)
         {
-            if (customer == null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(customer);
             }
 
             var customerEntity = this.mapper.Map<Customer>(customer);
 
-            await this.repository.CreateAsync(customerEntity);
+            await this.customerRepository.CreateAsync(customerEntity);
 
             return Ok(customer);
         }
@@ -53,12 +51,17 @@ namespace SimpleApi.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Put(int id, CustomerDto customer)
         {
-            if (id != customer.Id)
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(customer);
             }
 
-            var customerEntity = await this.repository.GetByIdWithIncludesAsync(customer.Id, isNoTracking:false);
+            if (id != customer.Id)
+            {
+                return BadRequest(customer);
+            }
+
+            var customerEntity = await this.customerRepository.GetByIdWithIncludesAsync(customer.Id, isNoTracking:false);
 
             if (customerEntity == null)
             {
@@ -69,7 +72,7 @@ namespace SimpleApi.Controllers
             customerEntity.FullName = customer.FullName;
             customerEntity.PhoneNumber = customer.PhoneNumber;
 
-            await this.repository.UpdateAsync(customerEntity);
+            await this.customerRepository.UpdateAsync(customerEntity);
 
             return Ok(customer);
         }

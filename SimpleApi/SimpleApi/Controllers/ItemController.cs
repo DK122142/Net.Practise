@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using App.Core.Entity;
 using App.DataAccess.Repository;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using SimpleApi.DataTransfer.DeliveriesDto;
 using SimpleApi.DataTransfer.ItemsDto;
 
 namespace SimpleApi.Controllers
@@ -15,28 +15,37 @@ namespace SimpleApi.Controllers
     [ApiController]
     public class ItemController : ControllerBase
     {
-        private IRepository<Item> repository;
-        private IMapper mapper;
+        private readonly IRepository<Item> itemRepository;
+        private readonly IMapper mapper;
 
-        public ItemController(IRepository<Item> repository, IMapper mapper)
+        public ItemController(IRepository<Item> itemRepository, IMapper mapper)
         {
-            this.repository = repository;
+            this.itemRepository = itemRepository;
             this.mapper = mapper;
         }
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get(int id)
         {
-            var item = await this.repository.GetByIdWithIncludesAsync(
+            var item = await this.itemRepository.GetByIdWithIncludesAsync(
                 id,
                 new List<Expression<Func<Item, dynamic>>>
                 {
-                    i=>i.Contracts
+                    i => i.Contracts
                 });
 
             if (item == null)
             {
                 return NotFound();
+            }
+
+            foreach (var itemContract in item.Contracts)
+            {
+                itemContract.Items = itemContract.Items.Select(i=>new Item
+                {
+                    Id = i.Id,
+                    Name = i.Name
+                });
             }
 
             return new ObjectResult(item);
@@ -45,31 +54,36 @@ namespace SimpleApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(ItemCreateDto item)
         {
-            if (item == null)
+            if (ModelState.IsValid)
             {
-                return BadRequest();
+                var entity = this.mapper.Map<Item>(item);
+
+                await this.itemRepository.CreateAsync(entity);
+
+                return Ok(item);
             }
 
-            var entity = this.mapper.Map<Item>(item);
-
-            await this.repository.CreateAsync(entity);
-
-            return Ok(item);
+            return BadRequest(item);
         }
         
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Put(int id, ItemDto item)
         {
-            if (id != item.Id)
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(item);
             }
 
-            var entity = await this.repository.GetByIdWithIncludesAsync(item.Id, isNoTracking:false);
+            if (id != item.Id)
+            {
+                return BadRequest(item);
+            }
+
+            var entity = await this.itemRepository.GetByIdWithIncludesAsync(item.Id, isNoTracking:false);
 
             if (entity == null)
             {
-                return BadRequest();
+                return BadRequest(item);
             }
 
             entity.Cost = item.Cost;
@@ -79,7 +93,7 @@ namespace SimpleApi.Controllers
             entity.Nds = item.Nds;
             entity.Refrigerate = item.Refrigerate;
 
-            await this.repository.UpdateAsync(entity);
+            await this.itemRepository.UpdateAsync(entity);
 
             return Ok(item);
         }

@@ -17,11 +17,11 @@ namespace SimpleApi.Controllers
     [ApiController]
     public class ContractController : ControllerBase
     {
-        private IRepository<Contract> contractRepository;
-        private IRepository<Customer> customerRepository;
-        private IRepository<Delivery> deliveryRepository;
-        private IRepository<Item> itemRepository;
-        private IMapper mapper;
+        private readonly IRepository<Contract> contractRepository;
+        private readonly IRepository<Customer> customerRepository;
+        private readonly IRepository<Delivery> deliveryRepository;
+        private readonly IRepository<Item> itemRepository;
+        private readonly IMapper mapper;
 
         public ContractController(IRepository<Contract> contractRepository, IRepository<Customer> customerRepository, IRepository<Delivery> deliveryRepository, IRepository<Item> itemRepository, IMapper mapper)
         {
@@ -40,9 +40,9 @@ namespace SimpleApi.Controllers
                 id,
                 new List<Expression<Func<Contract, dynamic>>>
                 {
-                    c=>c.Customer,
-                    c=>c.Delivery,
-                    c=>c.Items
+                    c => c.Customer,
+                    c => c.Delivery,
+                    c => c.Items
                 });
 
             if (contract == null)
@@ -52,7 +52,12 @@ namespace SimpleApi.Controllers
 
             foreach (var contractItem in contract.Items)
             {
-                contractItem.Contracts = null;
+                contractItem.Contracts = contractItem.Contracts.Select(c => new Contract
+                {
+                    Id = c.Id,
+                    CustomerId = c.CustomerId,
+                    DeliveryId = c.DeliveryId
+                });
             }
 
             return new ObjectResult(contract);
@@ -62,14 +67,19 @@ namespace SimpleApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(ContractCreateDto contractCreateDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(contractCreateDto);
+            }
+
             if (await this.customerRepository.GetByIdWithIncludesAsync(contractCreateDto.CustomerId) == null)
             {
-                return BadRequest();
+                return BadRequest(contractCreateDto);
             }
 
             if (await this.deliveryRepository.GetByIdWithIncludesAsync(contractCreateDto.DeliveryId) == null)
             {
-                return BadRequest();
+                return BadRequest(contractCreateDto);
             }
 
             var items = new List<Item>();
@@ -80,7 +90,7 @@ namespace SimpleApi.Controllers
 
                 if (item == null)
                 {
-                    return BadRequest();
+                    return BadRequest(contractCreateDto);
                 }
 
                 items.Add(item);
@@ -100,6 +110,11 @@ namespace SimpleApi.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Put(int id, ContractCreateDto contractCreateDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(contractCreateDto);
+            }
+
             var contractEntity = await this.contractRepository.GetByIdWithIncludesAsync(
                 id,
                 isNoTracking: false);
@@ -111,12 +126,12 @@ namespace SimpleApi.Controllers
             
             if (await this.customerRepository.GetByIdWithIncludesAsync(contractCreateDto.CustomerId) == null)
             {
-                return BadRequest();
+                return BadRequest(contractCreateDto);
             }
 
             if (await this.deliveryRepository.GetByIdWithIncludesAsync(contractCreateDto.DeliveryId) == null)
             {
-                return BadRequest();
+                return BadRequest(contractCreateDto);
             }
 
             var items = new List<Item>();
@@ -127,7 +142,7 @@ namespace SimpleApi.Controllers
 
                 if (item == null)
                 {
-                    return BadRequest();
+                    return BadRequest(contractCreateDto);
                 }
 
                 items.Add(item);
