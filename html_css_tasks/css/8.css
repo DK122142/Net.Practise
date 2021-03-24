@@ -1,0 +1,25 @@
+h1 {
+	color: red;
+	text-align: right;
+}
+h2 {
+	color: green;
+}
+
+b {
+    color: red;
+    font-size: 20px;
+}
+i {
+    color: blue;
+    font-weight: bold;
+}
+
+p {
+    font: 13px/27px Arial;
+    width: 50%;
+    text-align: justify;
+}
+
+ul {font-style: italic; color: #924763; width: 500px;}
+ol {color: red;}

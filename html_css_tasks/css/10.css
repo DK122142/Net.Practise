@@ -1,0 +1,12 @@
+p {
+    text-align: justify;
+}
+
+#monkey_img_1  {
+    float: left;
+    margin-right: 15px
+}
+#monkey_img_2  {
+    float: right;
+    margin-left: 15px
+}
