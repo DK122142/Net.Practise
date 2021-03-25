@@ -16,7 +16,7 @@ namespace PhoneBook.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "PhoneBook");
         }
 
         public IActionResult Privacy()

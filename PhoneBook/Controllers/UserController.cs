@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -12,13 +11,11 @@ namespace PhoneBook.Controllers
 {
     public class UserController : Controller
     {
-        private IAuthService service;
-        private IMapper mapper;
+        private readonly IAuthService authService;
 
-        public UserController(IAuthService service, IMapper mapper)
+        public UserController(IAuthService authService)
         {
-            this.service = service;
-            this.mapper = mapper;
+            this.authService = authService;
         }
 
         [HttpGet]
@@ -26,19 +23,19 @@ namespace PhoneBook.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(AuthViewModel model)
+        public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var loginResult = await this.service.Login(model);
+                var loginResult = await this.authService.Login(model.Login, model.Password);
 
                 if (loginResult.IsSucceed)
                 {
-                    await Authenticate(model.UserName, loginResult.UserId.ToString());
+                    await Authenticate(model.Login, loginResult.UserId.ToString());
 
                     return RedirectToAction("Index", "PhoneBook");
                 }
-                ModelState.AddModelError("","Wrong login or password");
+                ModelState.AddModelError(string.Empty, "Wrong login or password");
             }
 
             return View(model);
@@ -47,21 +44,25 @@ namespace PhoneBook.Controllers
         [HttpGet]
         public IActionResult Register() => View();
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(AuthViewModel model)
+        public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
-                if (await this.service.Register(model))
+                var registrationSucceed = await this.authService.Register(model.UserName, model.Password);
+
+                if (registrationSucceed)
                 {
-                    await this.Login(model);
-                    // return RedirectToAction("Login", "User");
+                    await this.Login(new LoginViewModel
+                    {
+                        Login = model.UserName,
+                        Password = model.Password
+                    });
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Registration failed");
+                    ModelState.AddModelError(string.Empty, "Registration failed");
                 }
             }
 
@@ -71,15 +72,15 @@ namespace PhoneBook.Controllers
         public async Task<IActionResult> LogOut()
         {
             await this.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login", "User");
+            return RedirectToAction("Index", "Home");
         }
 
         private async Task Authenticate(string userName, string userId)
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, userName),
-                new Claim(ClaimTypes.NameIdentifier, userId)
+                new(ClaimTypes.Name, userName),
+                new(ClaimTypes.NameIdentifier, userId)
             };
 
             ClaimsIdentity id = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
