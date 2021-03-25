@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PhoneBook.Models;
 using PhoneBook.Services.Interfaces;
 using PhoneBook.ViewModels;
@@ -16,16 +15,16 @@ namespace PhoneBook.Controllers
     [Authorize]
     public class PhoneBookController : Controller
     {
-        private IPhoneBookService service;
-        private IStatusService statusService;
-        private IUserService userService;
-        private IMapper mapper;
+        private readonly IPhoneBookService phoneBookService;
+        private readonly IStatusService statusService;
+        private readonly IUserService userService;
+        private readonly IMapper mapper;
 
-        public PhoneBookController(IPhoneBookService service, IStatusService statusService, IUserService userService, IMapper mapper)
+        public PhoneBookController(IPhoneBookService phoneBookService, IStatusService statusService, IUserService userService, IMapper mapper)
         {
             this.mapper = mapper;
             this.statusService = statusService;
-            this.service = service;
+            this.phoneBookService = phoneBookService;
             this.userService = userService;
         }
 
@@ -34,14 +33,16 @@ namespace PhoneBook.Controllers
         {
             var pageSize = 10;
 
-            var records = await this.service.GetPageOfPhoneNumbers((page - 1) * pageSize, pageSize);
+            var count = await this.phoneBookService.TotalCountAsync();
 
-            var pageVM = new PageViewModel(await this.service.TotalPhoneNumbers(), page, pageSize);
+            var records = await this.phoneBookService.GetPageAsync(page, pageSize);
 
-            var viewModel = new IndexViewModel
+            var pageViewModel = new PageViewModel(count, page, pageSize);
+
+            var viewModel = new PaginationViewModel<PhoneNumberViewModel>
             {
-                PageViewModel = pageVM,
-                PhoneNumbers = this.mapper.Map<IEnumerable<PhoneNumberViewModel>>(records)
+                PageViewModel = pageViewModel,
+                Models = this.mapper.Map<IEnumerable<PhoneNumberViewModel>>(records)
             };
 
             return View(viewModel);
@@ -65,26 +66,33 @@ namespace PhoneBook.Controllers
                 if (ModelState.IsValid)
                 {
                     var record = this.mapper.Map<PhoneNumber>(model);
+
                     var creatorId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-                    record.Creator = await this.userService.GetById(creatorId);
-                    record.Added = DateTime.Now;
-                    record.Updated=DateTime.Now;
-                    record.Status =
-                        await this.statusService.Where(s => s.StatusType.Equals(model.Status)).SingleAsync();
-                    record.Id = Guid.NewGuid();
+                    var statuses = await this.statusService.FindBy(s => s.StatusType.Equals(model.StatusType));
 
-                    await this.service.Create(record);
+                    if (statuses.Count() > 1)
+                    {
+                        return View(model);
+                    }
+
+                    record.Creator = await this.userService.GetByIdAsync(Guid.Parse(creatorId));
+                    record.Added = DateTime.Now;
+                    record.Updated = DateTime.Now;
+                    record.Status = statuses.FirstOrDefault();
+                    
+                    await this.phoneBookService.Create(record);
 
                     return RedirectToAction("Index");
                 }
             }
-            catch (Exception e)
+            catch(Exception e)
             {
-                return View();
+                ModelState.AddModelError(string.Empty, e.Message);
+                return View(model);
             }
 
-            return View();
+            return View(model);
         }
 
         [HttpGet]
@@ -92,8 +100,12 @@ namespace PhoneBook.Controllers
         {
             var statuses = await this.statusService.Statuses();
             ViewBag.Statuses = statuses.Select(s => s.StatusType);
-            
-            return View(this.mapper.Map<PhoneNumberViewModel>(await this.service.GetById(id)));
+
+            var phoneNumber = await this.phoneBookService.GetByIdAsync(id);
+
+            var model = this.mapper.Map<PhoneNumberViewModel>(phoneNumber);
+
+            return View(model);
         }
 
         [HttpPost]
@@ -102,47 +114,49 @@ namespace PhoneBook.Controllers
         {
             if (ModelState.IsValid)
             {
-                var record = this.mapper.Map<PhoneNumber>(model);
+                var phoneNumber = await this.phoneBookService.GetByIdAsync(model.Id);
+
                 var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
-                if (model.Id != userId)
+                if (phoneNumber.Creator.Id != userId)
                 {
                     return RedirectToAction("Index");
                 }
 
-                await this.service.Update(record, userId);
+                var statuses = await this.statusService.FindBy(s => s.StatusType.Equals(model.StatusType));
+
+                if (statuses.Count() > 1)
+                {
+                    return View(model);
+                }
+
+                phoneNumber.Number = model.Number;
+                phoneNumber.Address = model.Address;
+                phoneNumber.Updated = DateTime.Now;
+                phoneNumber.Status = statuses.FirstOrDefault();
+
+                await this.phoneBookService.Update(phoneNumber);
 
                 return RedirectToAction("Index");
             }
 
             return View(model);
         }
-
-        [HttpGet]
-        public async Task<IActionResult> Delete(Guid id)
-        {
-            return View(this.mapper.Map<PhoneNumberViewModel>(await this.service.GetById(id)));
-        }
-
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(PhoneNumberViewModel model)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            if (ModelState.IsValid)
+            var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+            var phoneNumber = await this.phoneBookService.GetByIdAsync(id);
+
+            if (userId == phoneNumber.Creator.Id)
             {
-                var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-
-                if (model.Id != userId)
-                {
-                    return RedirectToAction("Index");
-                }
-
-                await this.service.Delete(model.Id, userId);
-
-                return RedirectToAction("Index");
+                await this.phoneBookService.DeleteAsync(id);
             }
 
-            return View(model);
+            return RedirectToAction("Index");
         }
     }
 }
