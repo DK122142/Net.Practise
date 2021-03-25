@@ -19,11 +19,29 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Phone Numbers</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item mx-2">
+                                <form method="post" asp-controller="User" asp-action="LogOut">
+                                    <input type="submit" value="Logout" class="btn btn-outline-danger" />
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item mx-2">
+                                <form method="get" asp-controller="User" asp-action="Login">
+                                    <input type="submit" value="LogIn" class="btn btn-primary" />
+                                </form>
+                            </li>
+                            <li class="nav-item mx-2">
+                                <form method="get" asp-controller="User" asp-action="Register">
+                                    <input type="submit" value="Register" class="btn btn-outline-primary" />
+                                </form>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
