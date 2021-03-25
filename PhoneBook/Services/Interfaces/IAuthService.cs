@@ -5,8 +5,8 @@ namespace PhoneBook.Services.Interfaces
 {
     public interface IAuthService
     {
-        Task<bool> Register(AuthViewModel model);
+        Task<bool> Register(string username, string password);
         
-        Task<LoginResultViewModel> Login(AuthViewModel model);
+        Task<LoginResultViewModel> Login(string username, string password);
     }
 }

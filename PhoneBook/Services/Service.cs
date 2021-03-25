@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using PhoneBook.EF;
 using PhoneBook.Models;
+using PhoneBook.Repository;
 using PhoneBook.Services.Interfaces;
 
 namespace PhoneBook.Services
@@ -13,29 +11,40 @@ namespace PhoneBook.Services
     public class Service<T> : IService<T> where T : class, IEntity
     {
         
-        private DbSet<T> table;
+        protected readonly IRepository<T> repository;
 
-        public Service(PhoneBookContext context)
+        public Service(IRepository<T> repository)
         {
-            this.table = context.Set<T>();
+            this.repository = repository;
+        }
+        
+        public virtual async Task<IEnumerable<T>> GetPageAsync(int pageNumber, int itemsOnPage)
+        {
+            return await this.repository.SkipTake((pageNumber - 1) * itemsOnPage, itemsOnPage);
+        }
+        
+        public virtual async Task<T> GetByIdAsync(Guid id)
+        {
+            return await this.repository.GetByIdAsync(id);
         }
 
-        public async Task Add(T entity) => await this.table.AddAsync(entity);
+        public virtual async Task<IEnumerable<T>> FindBy(Expression<Func<T, bool>> predicate)
+        {
+           return await this.repository.FindBy(predicate);
+        }
 
-        public async Task Add(IEnumerable<T> items) => await this.table.AddRangeAsync(items);
+        public virtual async Task DeleteAsync(Guid id)
+        {
+            var entity = await this.repository.GetByIdAsync(id);
 
-        public async Task<IList<T>> All() => await this.table.AsNoTracking().ToListAsync();
+            this.repository.Delete(entity);
 
-        public async Task<T> GetById(string id) => await this.table.SingleAsync(x => x.Id.Equals(id));
+            await this.repository.SaveChangesAsync();
+        }
 
-        public void Update(T entity) => this.table.Update(entity);
-
-        public void Update(IEnumerable<T> items) => this.table.UpdateRange(items);
-
-        public void Delete(T entity) => this.table.Remove(entity);
-
-        public void Delete(IEnumerable<T> entities) => this.table.RemoveRange(entities);
-
-        public IQueryable<T> Where(Expression<Func<T, bool>> expression) => this.table.Where(expression);
+        public async Task<int> TotalCountAsync()
+        {
+            return await this.repository.CountAsync();
+        }
     }
 }

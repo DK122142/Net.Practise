@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -8,23 +7,14 @@ namespace PhoneBook.Services.Interfaces
 {
     public interface IService<T> where T : class
     {
+        Task<IEnumerable<T>> GetPageAsync(int pageNumber, int itemsOnPage);
+
+        Task<T> GetByIdAsync(Guid id);
         
-        Task Add(T entity);
+        Task<IEnumerable<T>> FindBy(Expression<Func<T, bool>> predicate);
 
-        Task Add(IEnumerable<T> items);
-        
-        Task<IList<T>> All();
+        Task DeleteAsync(Guid id);
 
-        Task<T> GetById(string id);
-        
-        void Update(T entity);
-
-        void Update(IEnumerable<T> items);
-
-        void Delete(T entity);
-
-        void Delete(IEnumerable<T> entities);
-
-        IQueryable<T> Where(Expression<Func<T, bool>> expression);
+        Task<int> TotalCountAsync();
     }
 }

@@ -1,12 +1,12 @@
-﻿using PhoneBook.EF;
-using PhoneBook.Models;
+﻿using PhoneBook.Models;
+using PhoneBook.Repository;
 using PhoneBook.Services.Interfaces;
 
 namespace PhoneBook.Services
 {
     public class UserService : Service<User>, IUserService
     {
-        public UserService(PhoneBookContext context) : base(context)
+        public UserService(IRepository<User> repository) : base(repository)
         {
         }
     }

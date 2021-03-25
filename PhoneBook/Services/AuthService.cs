@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PhoneBook.EF;
 using PhoneBook.Models;
@@ -17,35 +16,33 @@ namespace PhoneBook.Services
             this.context = context;
         }
 
-        public async Task<bool> Register(AuthViewModel model)
+        public async Task<bool> Register(string username, string password)
         {
-            var user = await this.context.Users.FirstOrDefaultAsync(u => u.Name.Equals(model.UserName));
+            var user = await this.context.Users.FirstOrDefaultAsync(u => u.Name.Equals(username));
 
-            if (user == null)
+            if (user == default)
             {
                 await this.context.Users.AddAsync(
-                    new User()
+                    new User
                     {
-                        Id = Guid.NewGuid(),
-                        Name = model.UserName,
-                        Password = model.Password,
+                        Name = username,
+                        Password = password,
                     });
 
-                if (await this.context.SaveChangesAsync() > 0)
-                {
-                    return true;
-                }
+                await this.context.SaveChangesAsync();
+
+                return true;
             }
 
             return false;
         }
 
-        public async Task<LoginResultViewModel> Login(AuthViewModel model)
+        public async Task<LoginResultViewModel> Login(string username, string password)
         {
             var result = new LoginResultViewModel();
 
             var user = await this.context.Users.FirstOrDefaultAsync(u =>
-                u.Name.Equals(model.UserName) && u.Password.Equals(model.Password));
+                u.Name.Equals(username) && u.Password.Equals(password));
             
             if (user != null)
             {
