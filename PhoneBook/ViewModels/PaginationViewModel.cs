@@ -2,9 +2,9 @@
 
 namespace PhoneBook.ViewModels
 {
-    public class IndexViewModel
+    public class PaginationViewModel<TModel> where TModel : class
     {
-        public IEnumerable<PhoneNumberViewModel> PhoneNumbers { get; set; }
+        public IEnumerable<TModel> Models { get; set; }
 
         public PageViewModel PageViewModel { get; set; }
     }
