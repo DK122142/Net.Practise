@@ -14,8 +14,8 @@ namespace PhoneBook.Mapping
                 .ReverseMap();
 
             CreateMap<PhoneNumber, PhoneNumberViewModel>()
-                .ForMember(vm => vm.Status, c => c.MapFrom(pn => pn.Status.StatusType))
-                .ForMember(vm=>vm.CreatorId,c=>c.MapFrom(pn=>pn.Creator.Id))
+                .ForMember(vm => vm.StatusType, c => c.MapFrom(pn => pn.Status.StatusType))
+                .ForMember(vm => vm.CreatorId, c => c.MapFrom(pn => pn.Creator.Id))
                 .ReverseMap();
         }
     }

@@ -17,12 +17,9 @@ namespace PhoneBook.EF
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<PhoneNumberStatus>().HasData(
-                new PhoneNumberStatus[]
-                {
-                    new(){Id = Guid.NewGuid(), StatusType = "Relevant"},
-                    new(){Id = Guid.NewGuid(), StatusType = "Irrelevant"},
-                    new(){Id = Guid.NewGuid(), StatusType = "Requires clarification"}
-                });
+                new(){Id = Guid.NewGuid(), StatusType = "Relevant"}, 
+                new(){Id = Guid.NewGuid(), StatusType = "Irrelevant"},
+                new(){Id = Guid.NewGuid(), StatusType = "Requires clarification"});
             
         }
     }
