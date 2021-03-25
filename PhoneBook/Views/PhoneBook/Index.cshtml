@@ -1,0 +1,51 @@
+﻿@using PhoneBook.ViewModels
+@using System.Security.Claims
+@model PhoneBook.ViewModels.PaginationViewModel<PhoneNumberViewModel>
+
+@addTagHelper *, PhoneBook
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+<h1>Phone Numbers</h1>
+
+<p><a asp-action="Create">Add phone number</a></p>
+
+<table class="table">
+    <tr>
+        <th>Number</th><th>Address</th><th>StatusType</th>
+        <th>Added</th><th>Updated</th>
+    </tr>
+    @foreach (var pn in Model.Models)
+    {
+        <tr>
+            <td>@pn.Number</td>
+            <td>@pn.Address</td>
+            <td>@pn.StatusType</td>
+            <td>@pn.Added</td>
+            <td>@pn.Updated</td>
+            @if (User.Identity.IsAuthenticated
+                && Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)) == pn.CreatorId)
+            {
+
+                <td>
+                    <form asp-controller="PhoneBook" asp-action="Edit" asp-route-id="@pn.Id" method="get">
+                        <button type="submit" class="btn btn-sm btn-outline-primary">
+                            Edit
+                        </button>
+                    </form>
+                </td>
+                <td>
+                    <form asp-controller="PhoneBook" asp-action="Delete" asp-route-id="@pn.Id" method="post">
+                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            }
+        </tr>
+    }
+</table>
+<div>
+    <page-link page-model="@Model.PageViewModel" page-action="Index"></page-link>
+</div>

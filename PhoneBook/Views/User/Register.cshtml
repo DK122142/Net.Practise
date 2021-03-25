@@ -1,0 +1,32 @@
+﻿@model PhoneBook.ViewModels.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Registration";
+}
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    <form asp-antiforgery="true" asp-controller="User" asp-action="Register">
+        <div asp-validation-summary="ModelOnly"></div>
+        <div>
+            <div class="form-group">
+                <label asp-for="UserName"></label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ConfirmPassword"></label>
+                <input asp-for="ConfirmPassword" class="form-control" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Register" class="btn btn-primary" />
+            </div>
+        </div>
+    </form>
+</div>
