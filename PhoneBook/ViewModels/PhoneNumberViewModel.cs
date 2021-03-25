@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace PhoneBook.ViewModels
 {
@@ -8,14 +9,15 @@ namespace PhoneBook.ViewModels
 
         public string Address { get; set; }
 
+        [DataType(DataType.PhoneNumber, ErrorMessage = "Invalid Phone Number")]
         public string Number { get; set; }
 
         public DateTime Added { get; set; }
 
         public DateTime Updated { get; set; }
 
-        public string Status { get; set; }
+        public string StatusType { get; set; }
 
-        public string CreatorId { get; set; }
+        public Guid CreatorId { get; set; }
     }
 }

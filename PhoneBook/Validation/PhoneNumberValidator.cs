@@ -1,7 +1,7 @@
-﻿using System.Text.RegularExpressions;
-using FluentValidation;
+﻿using FluentValidation;
+using PhoneBook.ViewModels;
 
-namespace PhoneBook.ViewModels.Validation
+namespace PhoneBook.Validation
 {
     public class PhoneNumberValidator : AbstractValidator<PhoneNumberViewModel>
     {
@@ -9,9 +9,9 @@ namespace PhoneBook.ViewModels.Validation
         {
             RuleFor(x => x.Address)
                 .NotEmpty();
+
             RuleFor(x => x.Number)
-                .NotEmpty()
-                .Matches(new Regex(@"^[0-9]{10}$"));
+                .NotEmpty();
         }
     }
 }

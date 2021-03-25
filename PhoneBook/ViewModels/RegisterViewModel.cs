@@ -2,7 +2,7 @@
 
 namespace PhoneBook.ViewModels
 {
-    public class AuthViewModel
+    public class RegisterViewModel
     {
         [Required(ErrorMessage = "Requires username")]
         public string UserName { get; set; }

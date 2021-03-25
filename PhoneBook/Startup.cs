@@ -1,4 +1,5 @@
 using AutoMapper.Extensions.ExpressionMapping;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using PhoneBook.EF;
 using PhoneBook.Mapping;
+using PhoneBook.Repository;
 using PhoneBook.Services;
 using PhoneBook.Services.Interfaces;
 
@@ -26,10 +28,12 @@ namespace PhoneBook
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
-
             services.AddDbContext<PhoneBookContext>(options =>
-                options.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection")));
+            {
+                options
+                    .UseLazyLoadingProxies()
+                    .UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
+            });
 
             services.AddAutoMapper(cfg =>
             {
@@ -40,10 +44,19 @@ namespace PhoneBook
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(opt => opt.LoginPath = new PathString("/User/Login"));
 
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IPhoneBookService, PhoneBookService>();
             services.AddScoped<IStatusService, StatusService>();
             services.AddScoped<IUserService, UserService>();
+
+            services.AddControllersWithViews()
+                .AddFluentValidation(conf =>
+                {
+                    conf.RegisterValidatorsFromAssemblyContaining<Startup>();
+                    conf.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,7 +84,7 @@ namespace PhoneBook
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=User}/{action=Login}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }
