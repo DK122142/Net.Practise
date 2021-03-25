@@ -10,8 +10,8 @@ using PhoneBook.EF;
 namespace PhoneBook.Migrations
 {
     [DbContext(typeof(PhoneBookContext))]
-    [Migration("20210309210920_init")]
-    partial class init
+    [Migration("20210325132819_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -70,17 +70,17 @@ namespace PhoneBook.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("e090eb9d-e80e-468b-a329-dda5301fa4d2"),
+                            Id = new Guid("20d91fe7-2433-4611-bcf7-9e6479477f37"),
                             StatusType = "Relevant"
                         },
                         new
                         {
-                            Id = new Guid("ceed9c8f-e2b7-4324-bd80-6216f2493526"),
+                            Id = new Guid("b4b4f0f1-b3b3-443e-aa23-882a8602b7b4"),
                             StatusType = "Irrelevant"
                         },
                         new
                         {
-                            Id = new Guid("7e667448-b191-401e-92fa-b15a693b49f2"),
+                            Id = new Guid("2f59ab8f-48ea-44ed-93df-0389873a7ab2"),
                             StatusType = "Requires clarification"
                         });
                 });
