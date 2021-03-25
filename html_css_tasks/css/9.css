@@ -1,0 +1,13 @@
+body {
+	background: url(../images/9.background.png) repeat-y right top;
+}
+
+p {
+	width: 40%;
+	text-align: justify;
+	font-weight: bold;
+}
+
+h1, p{
+    color: black;
+}
